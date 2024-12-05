@@ -1,1 +1,1 @@
-export * from './logRoutes';
+export * from './log-routes';
