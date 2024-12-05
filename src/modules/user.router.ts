@@ -3,43 +3,43 @@ import express from 'express';
 export const userRouter = express.Router();
 
 userRouter.post('/register', (req, res) => {
-  res.send('create new user');
+  res.status(501).send('Not implemented');
 });
 userRouter.post('/logout', (req, res) => {
-  res.send('exit');
+  res.status(501).send('Not implemented');
 });
 userRouter.post('/refresh', (req, res) => {
-  res.send('refresh token');
+  res.status(501).send('Not implemented');
 });
 userRouter.post('/password/restore', (req, res) => {
-  res.send('restore password');
+  res.status(501).send('Not implemented');
 });
 userRouter.post('/:id/block', (req, res) => {
-  res.send('get block user');
+  res.status(501).send('Not implemented');
 });
 userRouter.post('/:id/unblock', (req, res) => {
-  res.send('get unblock user');
+  res.status(501).send('Not implemented');
 });
 
 userRouter.get('/login', (req, res) => {
-  res.send('get login');
+  res.status(501).send('Not implemented');
 });
 userRouter.get('', (req, res) => {
-  res.send('list users');
+  res.status(501).send('Not implemented');
 });
 userRouter.get('/profile', (req, res) => {
-  res.send('your profile');
+  res.status(501).send('Not implemented');
 });
 userRouter.get('/profile/:id', (req, res) => {
-  res.send('user profile');
+  res.status(501).send('Not implemented');
 });
 userRouter.get('/profile/telegram-link', (req, res) => {
-  res.send('telegram link');
+  res.status(501).send('Not implemented');
 });
 
 userRouter.put('/profile', (req, res) => {
-  res.send('update profile');
+  res.status(501).send('Not implemented');
 });
 userRouter.put('/password/change', (req, res) => {
-  res.send('change password');
+  res.status(501).send('Not implemented');
 });
