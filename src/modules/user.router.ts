@@ -1,5 +1,10 @@
 import express from 'express';
 
+import { UserLoginDto } from '../dto';
+import { BadRequestException } from '../errors/bad.request.exception';
+import { plainToInstance } from 'class-transformer';
+import { validateSync } from 'class-validator';
+
 export const userRouter = express.Router();
 
 userRouter.post('/register', (req, res) => {
@@ -20,10 +25,22 @@ userRouter.post('/:id/block', (req, res) => {
 userRouter.post('/:id/unblock', (req, res) => {
   res.status(501).send('Not implemented');
 });
+userRouter.post('/login', (req, res) => {
+  const dto = plainToInstance(UserLoginDto, req.params);
+  const errors = validateSync(dto);
+  if (errors.length) {
+    const constraints = errors[0].constraints;
+    let message = 'Unknown validation error';
 
-userRouter.get('/login', (req, res) => {
-  res.status(501).send('Not implemented');
+    if (constraints) {
+      message = constraints[Object.keys(constraints)[0]];
+    }
+
+    throw new BadRequestException(message);
+  }
+  res.status(200).json('Login success!');
 });
+
 userRouter.get('', (req, res) => {
   res.status(501).send('Not implemented');
 });
