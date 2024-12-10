@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { NextFunction, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 const limit = 10000;
 const range = 'minute';

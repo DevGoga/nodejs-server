@@ -1,4 +1,4 @@
-import { NextFunction, Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 export const logRequestMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const currentTime = new Date().toISOString();
