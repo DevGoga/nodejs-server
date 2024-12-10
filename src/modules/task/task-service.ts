@@ -1,8 +1,8 @@
 import { CreateTaskDto } from './dto';
-import TaskRepository from './task.repository';
-import { Task } from './task.types';
+import TaskRepository from './task-repository';
+import { Task } from './task-types';
 
-const TaskService = {
+export const TaskService = {
   create(dto: CreateTaskDto) {
     // Какая-то бизнес-логика
 

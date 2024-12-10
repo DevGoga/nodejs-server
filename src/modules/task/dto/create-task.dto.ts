@@ -1,12 +1,13 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { Severity } from '../task.types';
+import { IsEnum, IsString, MinLength } from 'class-validator';
+import { Severity } from '../task-types';
 
 export class CreateTaskDto {
   @IsString()
-  @IsNotEmpty()
+  @MinLength(1)
   title: string;
 
   @IsString()
+  @MinLength(1)
   description: string;
 
   @IsEnum(Severity)

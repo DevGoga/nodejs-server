@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+
 export const privateRoutes = (req: Request, res: Response, next: NextFunction) => {
   console.log(`Запущена проверка доступа!`);
   if (req.path === '/private' && (req.method === 'PUT' || req.method === 'POST')) {
