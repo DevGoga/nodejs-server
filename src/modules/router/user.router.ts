@@ -1,9 +1,8 @@
-import express from 'express';
-
-import { UserLoginDto } from '../dto';
-import { BadRequestException } from '../errors/bad.request.exception';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
+import express from 'express';
+import { BadRequestException } from '../../errors';
+import { UserLoginDto } from '../task/dto';
 
 export const userRouter = express.Router();
 

@@ -1,9 +1,10 @@
 import express from 'express';
+import taskController from '../task/task.controller';
 
 export const taskRouter = express.Router();
 
 taskRouter.post('', (req, res) => {
-  res.status(501).send('Not implemented');
+  taskController.create(req, res);
 });
 taskRouter.post('/:id/time', (req, res) => {
   res.status(501).send('Not implemented');
@@ -23,9 +24,9 @@ taskRouter.get('/my/assigned', (req, res) => {
 });
 
 taskRouter.put('/:id', (req, res) => {
-  res.status(501).send('Not implemented');
+  taskController.update(req, res);
 });
 
 taskRouter.delete('/:id', (req, res) => {
-  res.status(501).send('Not implemented');
+  taskController.delete(req, res);
 });
