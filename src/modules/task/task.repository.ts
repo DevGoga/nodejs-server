@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { Task } from './task-types';
+import { Task } from './task.types';
 
 let storage: Task[] = [];
 const filename = 'tasks.json';

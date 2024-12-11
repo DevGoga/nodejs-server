@@ -1,6 +1,6 @@
 import { CreateTaskDto } from './dto';
-import TaskRepository from './task-repository';
-import { Task } from './task-types';
+import TaskRepository from './task.repository';
+import { Task } from './task.types';
 
 export const TaskService = {
   create(dto: CreateTaskDto) {
