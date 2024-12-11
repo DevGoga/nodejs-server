@@ -1,4 +1,4 @@
-import { CreateTaskDto, UpdateTaskParamsDto } from './dto';
+import { CreateTaskDto, UpdateTaskBodyDto } from './dto';
 import TaskRepository from './task.repository';
 import { Task } from './task.types';
 
@@ -9,7 +9,7 @@ export const TaskService = {
   delete(id: Task['id']) {
     return { result: TaskRepository.delete(id) };
   },
-  update(id: Task['id'], dto: UpdateTaskParamsDto) {
+  update(id: Task['id'], dto: UpdateTaskBodyDto) {
     return TaskRepository.update(id, dto);
   },
 };
