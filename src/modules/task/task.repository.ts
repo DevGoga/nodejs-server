@@ -30,7 +30,7 @@ const TaskRepository = {
     const taskIndex = storage.findIndex((task) => task.id === id);
 
     if (taskIndex === -1) {
-      throw Error('Hi');
+      throw new Error(`Task ${id} not found`);
     }
     storage[taskIndex] = { ...storage[taskIndex], ...dto };
 
