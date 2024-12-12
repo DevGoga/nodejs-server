@@ -5,7 +5,7 @@ import { Task } from './task.types';
 let storage: Task[] = [];
 const filename = 'tasks.json';
 
-const saveStorageToFile = () => writeFileSync(filename, JSON.stringify(storage));
+const saveStorageToFile = () => writeFileSync(filename, JSON.stringify(storage, null, 2));
 
 if (existsSync(filename)) {
   storage = JSON.parse(readFileSync(filename, 'utf-8'));
