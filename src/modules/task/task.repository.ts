@@ -1,10 +1,11 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { UpdateTaskBodyDto } from '../../common';
 import { Task } from './task.types';
 
 let storage: Task[] = [];
 const filename = 'tasks.json';
 
-const saveStorageToFile = () => writeFileSync(filename, JSON.stringify(storage));
+const saveStorageToFile = () => writeFileSync(filename, JSON.stringify(storage, null, 2));
 
 if (existsSync(filename)) {
   storage = JSON.parse(readFileSync(filename, 'utf-8'));
@@ -24,6 +25,17 @@ const TaskRepository = {
     storage = storage.filter((item) => item.id !== id);
     saveStorageToFile();
     return true;
+  },
+  update(id: Task['id'], dto: UpdateTaskBodyDto) {
+    const taskIndex = storage.findIndex((task) => task.id === id);
+
+    if (taskIndex === -1) {
+      throw new Error(`Task ${id} not found`);
+    }
+    storage[taskIndex] = { ...storage[taskIndex], ...dto };
+
+    saveStorageToFile();
+    return storage[taskIndex];
   },
 };
 

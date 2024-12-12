@@ -2,7 +2,8 @@
   "name": "nodejs-server",
   "version": "1.0.0",
   "scripts": {
-    "start": "ts-node src/main.ts"
+    "start": "ts-node src/main.ts",
+    "build": "tsc"
   },
   "author": "Georgi Zarkua",
   "description": "",
@@ -15,11 +16,11 @@
   },
   "dependencies": {
     "chalk": "^4.1.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "dayjs": "^1.11.13",
     "express": "^4.21.1",
-    "reflect-metadata": "^0.2.2",
-    "transformer": "^1.2.8",
-    "validator": "^13.12.0"
+    "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.16.0",
@@ -35,7 +36,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.1.4",
     "prettier": "^3.4.2",
-    "typescript-eslint": "^8.17.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.17.0"
   }
 }
