@@ -13,4 +13,7 @@ export const TaskService = {
   update(id: Task['id'], dto: UpdateTaskBodyDto) {
     return TaskRepository.update(id, dto);
   },
+  get(id: Task['id']) {
+    return TaskRepository.getById(id);
+  },
 };

@@ -14,7 +14,7 @@ taskRouter.get('', (req, res) => {
   res.status(501).send('Not implemented');
 });
 taskRouter.get('/:id', (req, res) => {
-  res.status(501).send('Not implemented');
+  taskController.getById(req, res);
 });
 taskRouter.get('/my/authored', (req, res) => {
   res.status(501).send('Not implemented');
