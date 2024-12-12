@@ -11,8 +11,7 @@
     "singleQuote": true,
     "trailingComma": "all",
     "printWidth": 120,
-    "tabWidth": 2,
-    "endOfLine": "lf"
+    "tabWidth": 2
   },
   "dependencies": {
     "chalk": "^4.1.2",

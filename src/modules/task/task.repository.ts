@@ -26,6 +26,7 @@ const TaskRepository = {
     saveStorageToFile();
     return true;
   },
+
   update(id: Task['id'], dto: UpdateTaskBodyDto) {
     const taskIndex = storage.findIndex((task) => task.id === id);
 
@@ -36,6 +37,14 @@ const TaskRepository = {
 
     saveStorageToFile();
     return storage[taskIndex];
+  },
+
+  getById(id: Task['id']) {
+    const task = storage.find((task) => task.id === id);
+    if (!task) {
+      throw new Error(`Task ${id} not found`);
+    }
+    return task;
   },
 };
 
