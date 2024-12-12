@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsNumber, IsOptional, IsPositive, IsString, MinLength } from 'class-validator';
-import { Severity } from '../task.types';
+import { Severity } from '../modules/task';
 
 export class UpdateTaskParamsDto {
   @IsNumber()
@@ -14,14 +14,14 @@ export class UpdateTaskBodyDto {
   @IsOptional()
   @IsString()
   @MinLength(1)
-  title: string;
+  title?: string;
 
   @IsOptional()
   @IsString()
   @MinLength(1)
-  description: string;
+  description?: string;
 
   @IsOptional()
   @IsEnum(Severity)
-  severity: Severity;
+  severity?: Severity;
 }

@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { UpdateTaskBodyDto } from './dto';
+import { UpdateTaskBodyDto } from '../../common';
 import { Task } from './task.types';
 
 let storage: Task[] = [];
@@ -29,6 +29,9 @@ const TaskRepository = {
   update(id: Task['id'], dto: UpdateTaskBodyDto) {
     const taskIndex = storage.findIndex((task) => task.id === id);
 
+    if (taskIndex === -1) {
+      throw Error('Hi');
+    }
     storage[taskIndex] = { ...storage[taskIndex], ...dto };
 
     saveStorageToFile();

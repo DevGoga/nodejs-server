@@ -1,4 +1,5 @@
-import { CreateTaskDto, UpdateTaskBodyDto } from './dto';
+import { UpdateTaskBodyDto } from '../../common';
+import { CreateTaskDto } from './dto';
 import TaskRepository from './task.repository';
 import { Task } from './task.types';
 
