@@ -30,9 +30,7 @@ const TaskRepository = {
   update(id: Task['id'], dto: UpdateTaskBodyDto) {
     const taskIndex = storage.findIndex((task) => task.id === id);
 
-    if (taskIndex === -1) {
-      throw new Error(`Task ${id} not found`);
-    }
+    this.getById(id);
     storage[taskIndex] = { ...storage[taskIndex], ...dto };
 
     saveStorageToFile();
