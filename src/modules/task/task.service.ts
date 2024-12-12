@@ -1,4 +1,4 @@
-import { UpdateTaskBodyDto } from '../../common';
+import { PaginationDto, UpdateTaskBodyDto } from '../../common';
 import { CreateTaskDto } from './dto';
 import TaskRepository from './task.repository';
 import { Task } from './task.types';
@@ -15,5 +15,8 @@ export const TaskService = {
   },
   get(id: Task['id']) {
     return TaskRepository.getById(id);
+  },
+  all(dto: PaginationDto) {
+    return TaskRepository.getAll(dto);
   },
 };

@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { UpdateTaskBodyDto } from '../../common';
+import { PaginationDto, UpdateTaskBodyDto } from '../../common';
 import { Task } from './task.types';
 
 let storage: Task[] = [];
@@ -43,6 +43,22 @@ const TaskRepository = {
       throw new Error(`Task ${id} not found`);
     }
     return task;
+  },
+
+  getAll({ page = 1, limit = 10 }: PaginationDto) {
+    const totalTasks = storage.length;
+    const totalPages = Math.ceil(totalTasks / limit);
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const tasks = storage.slice(startIndex, endIndex);
+    return {
+      tasks,
+      totalTasks,
+      totalPages,
+      currentPage: page,
+    };
   },
 };
 

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { GetParamsId, UpdateTaskBodyDto } from '../../common';
+import { GetParamsId, PaginationDto, UpdateTaskBodyDto } from '../../common';
 import { validation } from '../../utilites';
 import { CreateTaskDto } from './dto';
 import { TaskService } from './task.service';
@@ -30,6 +30,13 @@ const TaskController = {
   getById(req: Request, res: Response) {
     const { id } = validation(GetParamsId, req.params);
     const result = TaskService.get(id);
+
+    res.json(result);
+  },
+
+  getAll(req: Request, res: Response) {
+    const dto = validation(PaginationDto, req.body);
+    const result = TaskService.all(dto);
 
     res.json(result);
   },
