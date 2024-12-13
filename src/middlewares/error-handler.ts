@@ -1,10 +1,22 @@
 import { NextFunction, Request, Response } from 'express';
+import { BadRequestException, NotFoundException } from '../errors';
 
 export const ErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   if (!err) next();
 
-  res.status(err.code ?? 500).json({
+  const customErrors = [BadRequestException, NotFoundException];
+
+  let isCustomError = false;
+
+  for (const customError of customErrors) {
+    if (err instanceof customError) {
+      isCustomError = true;
+      break;
+    }
+  }
+
+  res.status(isCustomError ? err.code : 500).json({
     code: 'error',
-    message: err.message,
+    message: isCustomError ? err.message : 'Internal server error',
   });
 };
