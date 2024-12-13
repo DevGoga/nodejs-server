@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { GetParamsId, PaginationDto, UpdateTaskBodyDto } from '../../common';
+import { GetParamsId, UpdateTaskBodyDto } from '../../common';
 import { validation } from '../../utilites';
 import { CreateTaskDto } from './dto';
+import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
 import { TaskService } from './task.service';
 
 const TaskController = {
@@ -35,7 +36,7 @@ const TaskController = {
   },
 
   getAll(req: Request, res: Response) {
-    const dto = validation(PaginationDto, req.body);
+    const dto = validation(FindAllTaskQueryDto, req.query);
     const result = TaskService.all(dto);
 
     res.json(result);
