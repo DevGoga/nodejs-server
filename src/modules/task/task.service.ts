@@ -1,5 +1,6 @@
 import { compareSync, hashSync } from 'bcrypt';
 import { UpdateTaskBodyDto } from '../../common';
+import { NotFoundException } from '../../errors';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
 import TaskRepository from './task.repository';
@@ -23,7 +24,7 @@ export const TaskService = {
     const task = TaskRepository.getById(id);
 
     if (task === null) {
-      throw new Error(`Task ${id} not found`);
+      throw new NotFoundException(`Task ${id} not found`);
     }
 
     return TaskRepository.update(id, dto);
