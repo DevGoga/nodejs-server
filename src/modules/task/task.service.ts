@@ -1,3 +1,4 @@
+import { compareSync, hashSync } from 'bcrypt';
 import { UpdateTaskBodyDto } from '../../common';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
@@ -6,7 +7,13 @@ import { Task } from './task.types';
 
 export const TaskService = {
   create(dto: CreateTaskDto) {
-    return TaskRepository.create(dto);
+    const rounds = 10;
+    const hash = hashSync(dto.description, rounds);
+
+    return TaskRepository.create({
+      ...dto,
+      description: hash,
+    });
   },
   delete(id: Task['id']) {
     return { result: TaskRepository.delete(id) };
@@ -22,6 +29,23 @@ export const TaskService = {
     return TaskRepository.update(id, dto);
   },
   get(id: Task['id']) {
+    debugger;
+    const dto = {
+      email: 'user@mail.ru',
+      password: 'qwerty123',
+    };
+
+    const user = TaskRepository.getById(1); // UserRepository.findOneByEmail(dto.email);
+
+    if (!user) {
+      throw new Error(`User ${id} not found`);
+    }
+
+    if (compareSync(dto.password, user.description)) {
+      console.log('Успех');
+      debugger;
+    }
+
     return TaskRepository.getById(id);
   },
   all(dto: FindAllTaskQueryDto) {
