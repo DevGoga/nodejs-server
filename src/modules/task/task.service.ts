@@ -1,5 +1,6 @@
 import { compareSync, hashSync } from 'bcrypt';
 import { UpdateTaskBodyDto } from '../../common';
+import { appConfig } from '../../config';
 import { NotFoundException } from '../../errors';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
@@ -8,8 +9,7 @@ import { Task } from './task.types';
 
 export const TaskService = {
   create(dto: CreateTaskDto) {
-    const rounds = 10;
-    const hash = hashSync(dto.description, rounds);
+    const hash = hashSync(dto.description, appConfig.passwordRounds);
 
     return TaskRepository.create({
       ...dto,

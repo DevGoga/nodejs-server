@@ -10,6 +10,7 @@ export type EnvStructure<T = any> = {
 
 const config: EnvStructure<AppConfig> = {
   port: process.env.PORT,
+  passwordRounds: process.env.PASSWORD_ROUNDS,
 };
 
 export const appConfig = validation(AppConfig, config);
