@@ -1,19 +1,60 @@
+import { compareSync, hashSync } from 'bcrypt';
 import { UpdateTaskBodyDto } from '../../common';
+import { appConfig } from '../../config';
+import { NotFoundException } from '../../errors';
 import { CreateTaskDto } from './dto';
-import TaskRepository from './task.repository';
+import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
+import { TaskRepository } from './task.repository';
 import { Task } from './task.types';
 
-export const TaskService = {
+export class TaskService {
+  constructor(private readonly repository: TaskRepository) {}
+
   create(dto: CreateTaskDto) {
-    return TaskRepository.create(dto);
-  },
+    const hash = hashSync(dto.description, appConfig.passwordRounds);
+
+    return this.repository.create({
+      ...dto,
+      description: hash,
+    });
+  }
+
   delete(id: Task['id']) {
-    return { result: TaskRepository.delete(id) };
-  },
+    return { result: this.repository.delete(id) };
+  }
+
   update(id: Task['id'], dto: UpdateTaskBodyDto) {
-    return TaskRepository.update(id, dto);
-  },
+    const task = this.repository.getById(id);
+
+    if (task === null) {
+      throw new NotFoundException(`Task ${id} not found`);
+    }
+
+    return this.repository.update(id, dto);
+  }
+
   get(id: Task['id']) {
-    return TaskRepository.getById(id);
-  },
-};
+    debugger;
+    const dto = {
+      email: 'user@mail.ru',
+      password: 'qwerty123',
+    };
+
+    const user = this.repository.getById(1); // UserRepository.findOneByEmail(dto.email);
+
+    if (!user) {
+      throw new Error(`User ${id} not found`);
+    }
+
+    if (compareSync(dto.password, user.description)) {
+      console.log('Успех');
+      debugger;
+    }
+
+    return this.repository.getById(id);
+  }
+
+  all(dto: FindAllTaskQueryDto) {
+    return this.repository.getAll(dto);
+  }
+}
