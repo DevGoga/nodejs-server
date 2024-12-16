@@ -17,3 +17,5 @@ export const TaskService = {
     return TaskRepository.getById(id);
   },
 };
+
+export const UserService = {};

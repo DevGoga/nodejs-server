@@ -2,10 +2,10 @@ import { IsString, MinLength } from 'class-validator';
 
 export class UserLoginDto {
   @IsString()
-  @MinLength(3)
+  @MinLength(1)
   nick: string;
 
   @IsString()
-  @MinLength(5)
+  @MinLength(1)
   password: string;
 }
