@@ -39,7 +39,7 @@ const TaskController = {
     const dto = validation(FindAllTaskQueryDto, req.query);
     const result = TaskService.all(dto);
 
-    res.json(result);
+    res.json({ ...result, ...dto });
   },
 };
 

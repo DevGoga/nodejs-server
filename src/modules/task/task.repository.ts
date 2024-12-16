@@ -46,13 +46,15 @@ const TaskRepository = {
     return storage.find((task) => task.id === id) ?? null;
   },
 
-  getAll({ page = 1, limit = 10, sortDirection = SortDirection.desc, sortBy = TaskSortBy.id }: FindAllTaskQueryDto) {
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
+  getAll({ offset = 1, limit = 10, sortDirection = SortDirection.desc, sortBy = TaskSortBy.id }: FindAllTaskQueryDto) {
+    const startIndex = (offset - 1) * limit;
+    const endIndex = offset * limit;
 
     const tasks = storage
       .sort((a, b) => {
-        return Number(a[sortBy] > b[sortBy]);
+        if (a[sortBy] < b[sortBy]) return sortDirection === SortDirection.desc ? -1 : 1;
+        if (a[sortBy] > b[sortBy]) return sortDirection === SortDirection.desc ? 1 : -1;
+        return 0;
       })
       .slice(startIndex, endIndex);
 

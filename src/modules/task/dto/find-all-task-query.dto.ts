@@ -13,7 +13,7 @@ export class FindAllTaskQueryDto {
   @IsPositive()
   @IsInt()
   @Type(() => Number)
-  page?: number;
+  offset?: number;
 
   @IsOptional()
   @IsPositive()
