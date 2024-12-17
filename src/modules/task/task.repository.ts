@@ -61,5 +61,4 @@ const TaskRepository = {
     return { tasks, total: storage.length };
   },
 };
-
 export default TaskRepository;
