@@ -1,6 +1,6 @@
 import { config as parseEnvFile } from 'dotenv';
 import { validation } from '../utilites';
-import { AppConfig } from './config.dto';
+import { AppConfig } from './app-config.dto';
 
 parseEnvFile();
 
@@ -10,6 +10,7 @@ export type EnvStructure<T = any> = {
 
 const config: EnvStructure<AppConfig> = {
   passwordRounds: process.env.PASSWORD_ROUNDS,
+  port: process.env.PORT,
 };
 
 export const appConfig = validation(AppConfig, config);

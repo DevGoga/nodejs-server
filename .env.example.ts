@@ -1,2 +1,0 @@
-let PASSWORD_ROUNDS; // чет не робит
-PASSWORD_ROUNDS = 10;
