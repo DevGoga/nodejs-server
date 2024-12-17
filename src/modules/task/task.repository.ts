@@ -1,5 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { UpdateTaskBodyDto } from '../../common';
+import { SortDirection } from '../../common/sort-direction.enum';
+import { FindAllTaskQueryDto, TaskSortBy } from './dto/find-all-task-query.dto';
 import { Task } from './task.types';
 
 let storage: Task[] = [];
@@ -30,19 +32,33 @@ const TaskRepository = {
   update(id: Task['id'], dto: UpdateTaskBodyDto) {
     const taskIndex = storage.findIndex((task) => task.id === id);
 
-    this.getById(id);
+    if (taskIndex === -1) {
+      throw new Error('ERR-504: Database does not have this record');
+    }
+
     storage[taskIndex] = { ...storage[taskIndex], ...dto };
 
     saveStorageToFile();
     return storage[taskIndex];
   },
 
-  getById(id: Task['id']) {
-    const task = storage.find((task) => task.id === id);
-    if (!task) {
-      throw new Error(`Task ${id} not found`);
-    }
-    return task;
+  getById(id: Task['id']): Task | null {
+    return storage.find((task) => task.id === id) ?? null;
+  },
+
+  getAll({ offset = 1, limit = 10, sortDirection = SortDirection.desc, sortBy = TaskSortBy.id }: FindAllTaskQueryDto) {
+    const startIndex = (offset - 1) * limit;
+    const endIndex = offset * limit;
+
+    const tasks = storage
+      .sort((a, b) => {
+        if (a[sortBy] < b[sortBy]) return sortDirection === SortDirection.desc ? -1 : 1;
+        if (a[sortBy] > b[sortBy]) return sortDirection === SortDirection.desc ? 1 : -1;
+        return 0;
+      })
+      .slice(startIndex, endIndex);
+
+    return { tasks, total: storage.length };
   },
 };
 

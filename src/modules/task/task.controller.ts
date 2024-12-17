@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { GetParamsId, UpdateTaskBodyDto } from '../../common';
 import { validation } from '../../utilites';
 import { CreateTaskDto } from './dto';
+import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
 import { TaskService } from './task.service';
 
 const TaskController = {
@@ -32,6 +33,13 @@ const TaskController = {
     const result = TaskService.get(id);
 
     res.json(result);
+  },
+
+  getAll(req: Request, res: Response) {
+    const dto = validation(FindAllTaskQueryDto, req.query);
+    const result = TaskService.all(dto);
+
+    res.json({ ...result, ...dto });
   },
 };
 
