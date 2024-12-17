@@ -1,9 +1,10 @@
 import express from 'express';
+import userController from '../users/user.controller';
 
 export const userRouter = express.Router();
 
 userRouter.post('/register', (req, res) => {
-  res.status(501).send('Not implemented');
+  userController.registration(req, res);
 });
 userRouter.post('/logout', (req, res) => {
   res.status(501).send('Not implemented');
