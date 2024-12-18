@@ -13,7 +13,7 @@ if (existsSync(filename)) {
 }
 
 export const UserRepository = {
-  registration(dto: Omit<User, 'id' & 'role'>): User {
+  registration(dto: Omit<User, 'id'>): User {
     const maxId = storage.sort((a, b) => b.id - a.id)[0]?.id ?? 0;
     const newUser = { ...dto, id: maxId + 1 };
     storage.push(newUser);

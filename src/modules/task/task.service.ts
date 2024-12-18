@@ -8,6 +8,7 @@ export const TaskService = {
   create(dto: CreateTaskDto) {
     return TaskRepository.create(dto);
   },
+
   delete(id: Task['id']) {
     return { result: TaskRepository.delete(id) };
   },
@@ -21,9 +22,11 @@ export const TaskService = {
 
     return TaskRepository.update(id, dto);
   },
+
   get(id: Task['id']) {
     return TaskRepository.getById(id);
   },
+
   all(dto: FindAllTaskQueryDto) {
     return TaskRepository.getAll(dto);
   },
