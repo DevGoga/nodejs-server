@@ -13,15 +13,9 @@ if (existsSync(filename)) {
 }
 
 export const UserRepository = {
-  registration(dto: Omit<User, 'id'>, nick: User['nick']): User {
-    const existingUser = storage.find((user) => user.nick === nick);
-
-    if (existingUser) {
-      throw new Error('A user with this nickname already exists');
-    }
-
+  registration(dto: Omit<User, 'id' & 'role'>): User {
     const maxId = storage.sort((a, b) => b.id - a.id)[0]?.id ?? 0;
-    const newUser: User = { ...dto, id: maxId + 1 };
+    const newUser = { ...dto, id: maxId + 1 };
     storage.push(newUser);
     saveStorageToFile();
 

@@ -7,7 +7,7 @@ const UserController = {
   registration(req: Request, res: Response) {
     const dto = validation(RegistrationUserDto, req.body);
 
-    const result = UserService.registration(dto, dto.nick);
+    const result = UserService.registration(dto);
 
     res.json(result);
   },

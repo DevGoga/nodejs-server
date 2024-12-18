@@ -1,5 +1,4 @@
-import { IsEnum, IsString, MinLength } from 'class-validator';
-import { Role } from '../user.types';
+import { IsString, MinLength } from 'class-validator';
 
 export class RegistrationUserDto {
   @IsString()
@@ -9,7 +8,4 @@ export class RegistrationUserDto {
   @IsString()
   @MinLength(5)
   password: string;
-
-  @IsEnum(Role)
-  role: Role;
 }
