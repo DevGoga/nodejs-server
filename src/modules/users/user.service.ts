@@ -1,15 +1,39 @@
+import { hashSync } from 'bcrypt';
+import { appConfig } from '../../config';
 import { RegistrationUserDto } from './dto/registration-user.dto';
 import { UserRepository } from './user.repository';
 import { User } from './user.types';
 
-export const UserService = {
-  registration(dto: RegistrationUserDto): User {
-    const user = UserRepository.registration(dto);
+export class UserService {
+  constructor(private readonly repository: UserRepository) {}
 
-    if (dto.nick === user.nick) {
+  registration(dto: RegistrationUserDto): User {
+    const user = this.repository.findByNick(dto.nick);
+    const hash = hashSync(dto.password, appConfig.passwordRounds);
+    if (user) {
       throw new Error(`A user with this nickname already exists`);
     }
 
-    return UserRepository.registration(dto);
-  },
-};
+    return this.repository.save({ ...dto, password: hash });
+  }
+
+  profile(id: User['id']) {
+    const user = this.repository.read(id);
+
+    if (user === null) {
+      throw new Error(`Profile with id:${id} not found`);
+    }
+
+    return user;
+  }
+
+  login(dto: RegistrationUserDto) {
+    const user = this.repository.findByNick(dto.nick);
+
+    if (user === null) {
+      throw new Error(`A user with this nickname: ${dto.nick} already exists`);
+    }
+
+    return user;
+  }
+}

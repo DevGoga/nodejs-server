@@ -15,19 +15,19 @@ if (existsSync(filename)) {
   saveStorageToFile();
 }
 
-const TaskRepository = {
+export class TaskRepository {
   create(dto: Omit<Task, 'id'>) {
     const maxId = storage.sort((a, b) => b.id - a.id)[0]?.id ?? 0;
     storage.push({ ...dto, id: maxId + 1 });
     saveStorageToFile();
     return storage[storage.length - 1];
-  },
+  }
 
   delete(id: Task['id']) {
     storage = storage.filter((item) => item.id !== id);
     saveStorageToFile();
     return true;
-  },
+  }
 
   update(id: Task['id'], dto: UpdateTaskBodyDto) {
     const taskIndex = storage.findIndex((task) => task.id === id);
@@ -40,11 +40,11 @@ const TaskRepository = {
 
     saveStorageToFile();
     return storage[taskIndex];
-  },
+  }
 
   getById(id: Task['id']): Task | null {
     return storage.find((task) => task.id === id) ?? null;
-  },
+  }
 
   getAll({ offset = 1, limit = 10, sortDirection = SortDirection.desc, sortBy = TaskSortBy.id }: FindAllTaskQueryDto) {
     const startIndex = (offset - 1) * limit;
@@ -59,6 +59,5 @@ const TaskRepository = {
       .slice(startIndex, endIndex);
 
     return { tasks, total: storage.length };
-  },
-};
-export default TaskRepository;
+  }
+}

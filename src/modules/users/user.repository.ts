@@ -12,15 +12,23 @@ if (existsSync(filename)) {
   saveStorageToFile();
 }
 
-export const UserRepository = {
-  registration(dto: Omit<User, 'id'>): User {
+export class UserRepository {
+  save(dto: Omit<User, 'id'>): User {
     const maxId = storage.sort((a, b) => b.id - a.id)[0]?.id ?? 0;
     const newUser = { ...dto, id: maxId + 1 };
     storage.push(newUser);
     saveStorageToFile();
 
     return newUser;
-  },
-  getLogin(id: string) {},
-  getProfile(id: string) {},
-};
+  }
+
+  findByNick(nick: User['nick']) {
+    const user = storage.find((user) => user.nick === nick);
+
+    return user ?? null;
+  }
+
+  read(id: User['id']): User | null {
+    return storage.find((user) => user.id === id) ?? null;
+  }
+}
