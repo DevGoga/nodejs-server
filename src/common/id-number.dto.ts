@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsInt, IsNumber, IsPositive } from 'class-validator';
 
-export class GetParamsId {
+export class IdNumberDto {
   @IsNumber()
   @IsPositive()
   @IsInt()

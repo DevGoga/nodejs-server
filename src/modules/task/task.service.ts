@@ -1,4 +1,5 @@
 import { UpdateTaskBodyDto } from '../../common';
+import { NotFoundException } from '../../errors';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
 import { TaskRepository } from './task.repository';
@@ -19,7 +20,7 @@ export class TaskService {
     const task = this.repository.getById(id);
 
     if (task === null) {
-      throw new Error(`Task ${id} not found`);
+      throw new NotFoundException(`Task ${id} not found`);
     }
 
     return this.repository.update(id, dto);

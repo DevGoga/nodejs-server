@@ -23,9 +23,7 @@ export class UserRepository {
   }
 
   findByNick(nick: User['nick']) {
-    const user = storage.find((user) => user.nick === nick);
-
-    return user ?? null;
+    return storage.find((user) => user.nick === nick) ?? null;
   }
 
   read(id: User['id']): User | null {

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { GetParamsId } from '../../common';
+import { IdNumberDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
 import { validation } from '../../utilites';
@@ -65,7 +65,7 @@ export class UserController extends BaseController {
   }
 
   profile(req: Request, res: Response) {
-    const dto = validation(GetParamsId, req.params);
+    const dto = validation(IdNumberDto, req.params);
 
     const result = this.service.profile(dto.id);
 

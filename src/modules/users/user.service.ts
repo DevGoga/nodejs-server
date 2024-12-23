@@ -9,10 +9,12 @@ export class UserService {
 
   registration(dto: RegistrationUserDto): User {
     const user = this.repository.findByNick(dto.nick);
-    const hash = hashSync(dto.password, appConfig.passwordRounds);
+
     if (user) {
       throw new Error(`A user with this nickname already exists`);
     }
+
+    const hash = hashSync(dto.password, appConfig.passwordRounds);
 
     return this.repository.save({ ...dto, password: hash });
   }
@@ -31,7 +33,7 @@ export class UserService {
     const user = this.repository.findByNick(dto.nick);
 
     if (user === null) {
-      throw new Error(`A user with this nickname: ${dto.nick} already exists`);
+      throw new Error(`A user with this nickname: ${dto.nick} is missing`);
     }
 
     return user;

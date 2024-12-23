@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { GetParamsId, UpdateTaskBodyDto } from '../../common';
+import { IdNumberDto, UpdateTaskBodyDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
 import { validation } from '../../utilites';
@@ -39,7 +39,7 @@ export class TaskController extends BaseController {
   }
 
   delete(req: Request, res: Response) {
-    const dto = validation(GetParamsId, req.params);
+    const dto = validation(IdNumberDto, req.params);
     const result = this.service.delete(dto.id);
 
     res.json(result);
@@ -47,14 +47,14 @@ export class TaskController extends BaseController {
 
   update(req: Request, res: Response) {
     const dto = validation(UpdateTaskBodyDto, req.body);
-    const { id } = validation(GetParamsId, req.params);
+    const { id } = validation(IdNumberDto, req.params);
     const result = this.service.update(id, dto);
 
     res.json(result);
   }
 
   getById(req: Request, res: Response) {
-    const { id } = validation(GetParamsId, req.params);
+    const { id } = validation(IdNumberDto, req.params);
     const result = this.service.get(id);
 
     res.json(result);
