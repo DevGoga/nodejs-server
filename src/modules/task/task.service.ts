@@ -1,30 +1,36 @@
 import { UpdateTaskBodyDto } from '../../common';
+import { NotFoundException } from '../../errors';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
-import TaskRepository from './task.repository';
+import { TaskRepository } from './task.repository';
 import { Task } from './task.types';
 
-export const TaskService = {
+export class TaskService {
+  constructor(private readonly repository: TaskRepository) {}
+
   create(dto: CreateTaskDto) {
-    return TaskRepository.create(dto);
-  },
+    return this.repository.create(dto);
+  }
+
   delete(id: Task['id']) {
-    return { result: TaskRepository.delete(id) };
-  },
+    return { result: this.repository.delete(id) };
+  }
 
   update(id: Task['id'], dto: UpdateTaskBodyDto) {
-    const task = TaskRepository.getById(id);
+    const task = this.repository.getById(id);
 
     if (task === null) {
-      throw new Error(`Task ${id} not found`);
+      throw new NotFoundException(`Task ${id} not found`);
     }
 
-    return TaskRepository.update(id, dto);
-  },
+    return this.repository.update(id, dto);
+  }
+
   get(id: Task['id']) {
-    return TaskRepository.getById(id);
-  },
+    return this.repository.getById(id);
+  }
+
   all(dto: FindAllTaskQueryDto) {
-    return TaskRepository.getAll(dto);
-  },
-};
+    return this.repository.getAll(dto);
+  }
+}

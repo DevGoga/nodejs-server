@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
-import { Severity } from '../modules/task';
+import { Severity } from '..';
 
 export class UpdateTaskBodyDto {
   @IsOptional()
