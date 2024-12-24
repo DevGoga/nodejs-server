@@ -8,7 +8,7 @@ export abstract class BaseController {
     for (const route of [routes].flat(2)) {
       const handler = route.handler.bind(this);
       const method = route.method ?? 'get';
-      const handlers = [handler];
+      const handlers = [...(route.middleware ?? []), handler];
 
       this.router[method](route.path, handlers);
       console.info(`Route registered: ${method.toUpperCase()} ${route.path}`);
