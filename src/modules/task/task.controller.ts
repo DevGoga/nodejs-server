@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { NotFoundException } from '../../../express/src/errors';
 import { IdNumberDto, UpdateTaskBodyDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
+import { NotFoundException } from '../../errors';
 import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
 import { CreateTaskDto } from './dto';
