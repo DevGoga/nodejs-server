@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { IdNumberDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
+import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
 import { RegistrationUserDto } from './dto/registration-user.dto';
 import { UserService } from './user.service';
@@ -31,11 +31,8 @@ export class UserController extends BaseController {
       //   res.status(501).send('Not implemented');
       // });
 
-      { path: '/profile/:id', method: 'get', handler: this.profile },
+      { path: '/profile', method: 'get', handler: this.profile, middleware: [AuthGuard] },
       // userRouter.get('', (req, res) => {
-      //   res.status(501).send('Not implemented');
-      // });
-      // userRouter.get('/profile', (req, res) => {
       //   res.status(501).send('Not implemented');
       // });
       // userRouter.get('/profile/:id', (req, res) => {
@@ -65,9 +62,13 @@ export class UserController extends BaseController {
   }
 
   profile(req: Request, res: Response) {
-    const dto = validation(IdNumberDto, req.params);
+    const id = req.session.user?.id;
 
-    const result = this.service.profile(dto.id);
+    if (!id) {
+      throw new Error('Unauthorized');
+    }
+
+    const result = this.service.profile(id);
 
     res.json(result);
   }
@@ -76,6 +77,8 @@ export class UserController extends BaseController {
     const dto = validation(RegistrationUserDto, req.body);
 
     const result = this.service.login(dto);
+
+    req.session.user = result;
 
     res.json(result);
   }
