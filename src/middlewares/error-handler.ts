@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { BadRequestException, NotAuthorized, NotFoundException } from '../errors';
+import { BadRequestException, NotFoundException, UnauthorizedException } from '../errors';
 
 export const ErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   if (!err) next();
 
-  const customErrors = [BadRequestException, NotFoundException, NotAuthorized];
+  const customErrors = [BadRequestException, NotFoundException, UnauthorizedException];
 
   let isCustomError = false;
 

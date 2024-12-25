@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
+import { NotFoundException } from '../../../express/src/errors';
 import { IdNumberDto, UpdateTaskBodyDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
+import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
@@ -15,7 +17,7 @@ export class TaskController extends BaseController {
 
   initRoutes() {
     const routes: Route[] = [
-      { path: '', method: 'post', handler: this.create },
+      { path: '', method: 'post', handler: this.create, middleware: [AuthGuard] },
       // { path: '/:id/time', method: 'post', handler: ?},
 
       { path: '', method: 'get', handler: this.getAll },
@@ -33,7 +35,13 @@ export class TaskController extends BaseController {
 
   create(req: Request, res: Response) {
     const dto = validation(CreateTaskDto, req.body);
-    const result = this.service.create(dto);
+    const authorId = req.session.user?.id;
+
+    if (!authorId) {
+      throw new NotFoundException(`User with id [${authorId}] is not exist`);
+    }
+
+    const result = this.service.create(dto, authorId);
 
     res.json(result);
   }

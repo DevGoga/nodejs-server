@@ -8,8 +8,8 @@ import { Task } from './task.types';
 export class TaskService {
   constructor(private readonly repository: TaskRepository) {}
 
-  create(dto: CreateTaskDto) {
-    return this.repository.create(dto);
+  create(dto: CreateTaskDto, authorId: number) {
+    return this.repository.create({ ...dto, authorId });
   }
 
   delete(id: Task['id']) {

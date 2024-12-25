@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
+import { UnauthorizedException } from '../../errors';
 import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
 import { RegistrationUserDto } from './dto/registration-user.dto';
@@ -65,7 +66,7 @@ export class UserController extends BaseController {
     const id = req.session.user?.id;
 
     if (!id) {
-      throw new Error('Unauthorized');
+      throw new UnauthorizedException();
     }
 
     const result = this.service.profile(id);

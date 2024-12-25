@@ -8,5 +8,6 @@ export type Task = {
   id: number;
   title: string;
   description: string;
+  authorId: number;
   severity: Severity;
 };
