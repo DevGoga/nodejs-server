@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import 'express-async-errors';
 import express, { Request } from 'express';
 import { logRoutes } from './bootstrap';
 import { appConfig } from './config';
