@@ -1,5 +1,5 @@
 import { UpdateTaskBodyDto } from '../../common';
-import { NotFoundException } from '../../errors';
+import { NotFoundException } from '../../exception';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
 import { TaskRepository } from './task.repository';

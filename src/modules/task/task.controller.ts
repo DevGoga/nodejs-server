@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { IdNumberDto, UpdateTaskBodyDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
-import { NotFoundException } from '../../errors';
+import { UnauthorizedException } from '../../exception';
 import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
 import { CreateTaskDto } from './dto';
@@ -25,9 +25,9 @@ export class TaskController extends BaseController {
       // { path: '/my/authored', method: 'get', handler: ? },
       // { path: '/my/assigned', method: 'get', handler: ? },
 
-      { path: '/:id', method: 'put', handler: this.update },
+      { path: '/:id', method: 'put', handler: this.update, middleware: [AuthGuard] },
 
-      { path: '/:id', method: 'delete', handler: this.delete },
+      { path: '/:id', method: 'delete', handler: this.delete, middleware: [AuthGuard] },
     ];
 
     this.addRoute(routes);
@@ -38,7 +38,7 @@ export class TaskController extends BaseController {
     const authorId = req.session.user?.id;
 
     if (!authorId) {
-      throw new NotFoundException(`User with id [${authorId}] is not exist`);
+      throw new UnauthorizedException();
     }
 
     const result = this.service.create(dto, authorId);
@@ -47,8 +47,13 @@ export class TaskController extends BaseController {
   }
 
   delete(req: Request, res: Response) {
-    const dto = validation(IdNumberDto, req.params);
-    const result = this.service.delete(dto.id);
+    const id = req.session.user?.id;
+
+    if (!id) {
+      throw new UnauthorizedException();
+    }
+
+    const result = this.service.delete(id);
 
     res.json(result);
   }
@@ -56,6 +61,13 @@ export class TaskController extends BaseController {
   update(req: Request, res: Response) {
     const dto = validation(UpdateTaskBodyDto, req.body);
     const { id } = validation(IdNumberDto, req.params);
+
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+
     const result = this.service.update(id, dto);
 
     res.json(result);

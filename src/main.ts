@@ -3,7 +3,7 @@ import 'express-async-errors';
 import express, { Request } from 'express';
 import { logRoutes } from './bootstrap';
 import { appConfig } from './config';
-import { NotFoundException } from './errors';
+import { NotFoundException } from './exception';
 import { ErrorHandler, logRequestMiddleware, privateRoutes, rateLimiter, SessionMiddleware } from './middlewares';
 import { taskController } from './modules/task/task.module';
 import { userController } from './modules/users/user.module';
