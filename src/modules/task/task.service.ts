@@ -1,6 +1,6 @@
 import { UpdateTaskBodyDto } from '../../common';
 import { SortDirection } from '../../common/sort-direction.enum';
-import { TaskModel } from '../../database/models';
+import { TaskModel, UserModel } from '../../database/models';
 import { NotFoundException } from '../../errors';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskQueryDto, TaskSortBy } from './dto/find-all-task-query.dto';
@@ -11,8 +11,8 @@ export class TaskService {
   constructor(private readonly repository: TaskRepository) {}
 
   async create(dto: CreateTaskDto) {
-    const task = await TaskModel.create({ ...dto });
-    debugger;
+    const task = await TaskModel.create({ ...dto, authorId: 1 });
+
     return task;
   }
 
@@ -31,7 +31,9 @@ export class TaskService {
   }
 
   async get(id: Task['id']) {
-    const task = await TaskModel.findByPk(id);
+    const task = await TaskModel.findByPk(id, {
+      include: [{ model: UserModel, attributes: { exclude: ['password', 'createdAt', 'updatedAt'] } }],
+    });
 
     if (task === null) {
       throw new NotFoundException(`Task ${id} not found`);

@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { UserModel } from './user.model';
 
 @Table({ tableName: 'tasks' })
 export class TaskModel extends Model {
@@ -15,4 +16,18 @@ export class TaskModel extends Model {
     allowNull: false,
   })
   public title: string;
+
+  @ForeignKey(() => UserModel)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  public authorId: number;
+
+  @BelongsTo(() => UserModel, {
+    as: 'author',
+    foreignKey: 'authorId',
+    onDelete: 'CASCADE',
+  })
+  public author: UserModel;
 }
