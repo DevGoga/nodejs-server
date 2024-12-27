@@ -1,5 +1,6 @@
 import { hashSync } from 'bcrypt';
 import { appConfig } from '../../config';
+import { UserModel } from '../../database/models';
 import { RegistrationUserDto } from './dto/registration-user.dto';
 import { UserRepository } from './user.repository';
 import { User } from './user.types';
@@ -7,8 +8,8 @@ import { User } from './user.types';
 export class UserService {
   constructor(private readonly repository: UserRepository) {}
 
-  registration(dto: RegistrationUserDto): User {
-    const user = this.repository.findByNick(dto.nick);
+  async registration(dto: RegistrationUserDto): Promise<UserModel> {
+    const user = await UserModel.findOne({ where: { nick: dto.nick } });
 
     if (user) {
       throw new Error(`A user with this nickname already exists`);
@@ -16,7 +17,7 @@ export class UserService {
 
     const hash = hashSync(dto.password, appConfig.passwordRounds);
 
-    return this.repository.save({ ...dto, password: hash });
+    return UserModel.create({ ...dto, password: hash });
   }
 
   profile(id: User['id']) {
@@ -29,8 +30,8 @@ export class UserService {
     return user;
   }
 
-  login(dto: RegistrationUserDto) {
-    const user = this.repository.findByNick(dto.nick);
+  async login(dto: RegistrationUserDto) {
+    const user = await UserModel.findOne({ where: { nick: dto.nick } });
 
     if (user === null) {
       throw new Error(`A user with this nickname: ${dto.nick} is missing`);

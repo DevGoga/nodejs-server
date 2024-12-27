@@ -53,10 +53,10 @@ export class UserController extends BaseController {
     this.addRoute(routes);
   }
 
-  registration(req: Request, res: Response) {
+  async registration(req: Request, res: Response) {
     const dto = validation(RegistrationUserDto, req.body);
 
-    const result = this.service.registration(dto);
+    const result = await this.service.registration(dto);
 
     res.json(result);
   }
@@ -73,10 +73,10 @@ export class UserController extends BaseController {
     res.json(result);
   }
 
-  login(req: Request, res: Response) {
+  async login(req: Request, res: Response) {
     const dto = validation(RegistrationUserDto, req.body);
 
-    const result = this.service.login(dto);
+    const result = await this.service.login(dto);
 
     req.session.user = result;
 
