@@ -1,15 +1,19 @@
 import { UpdateTaskBodyDto } from '../../common';
+import { SortDirection } from '../../common/sort-direction.enum';
+import { TaskModel } from '../../database/models';
 import { NotFoundException } from '../../errors';
 import { CreateTaskDto } from './dto';
-import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
+import { FindAllTaskQueryDto, TaskSortBy } from './dto/find-all-task-query.dto';
 import { TaskRepository } from './task.repository';
 import { Task } from './task.types';
 
 export class TaskService {
   constructor(private readonly repository: TaskRepository) {}
 
-  create(dto: CreateTaskDto) {
-    return this.repository.create(dto);
+  async create(dto: CreateTaskDto) {
+    const task = await TaskModel.create({ ...dto });
+    debugger;
+    return task;
   }
 
   delete(id: Task['id']) {
@@ -26,11 +30,26 @@ export class TaskService {
     return this.repository.update(id, dto);
   }
 
-  get(id: Task['id']) {
-    return this.repository.getById(id);
+  async get(id: Task['id']) {
+    const task = await TaskModel.findByPk(id);
+
+    if (task === null) {
+      throw new NotFoundException(`Task ${id} not found`);
+    }
+
+    return task;
   }
 
-  all(dto: FindAllTaskQueryDto) {
-    return this.repository.getAll(dto);
+  async all(dto: FindAllTaskQueryDto) {
+    const sortBy = dto.sortBy ?? TaskSortBy.id;
+    const sortDirection = dto.sortDirection ?? SortDirection.desc;
+
+    const { rows, count } = await TaskModel.findAndCountAll({
+      order: [[sortBy, sortDirection]],
+      offset: dto.offset,
+      limit: dto.limit,
+    });
+
+    return { data: rows, total: count };
   }
 }

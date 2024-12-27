@@ -31,9 +31,9 @@ export class TaskController extends BaseController {
     this.addRoute(routes);
   }
 
-  create(req: Request, res: Response) {
+  async create(req: Request, res: Response) {
     const dto = validation(CreateTaskDto, req.body);
-    const result = this.service.create(dto);
+    const result = await this.service.create(dto);
 
     res.json(result);
   }
@@ -53,16 +53,16 @@ export class TaskController extends BaseController {
     res.json(result);
   }
 
-  getById(req: Request, res: Response) {
+  async getById(req: Request, res: Response) {
     const { id } = validation(IdNumberDto, req.params);
-    const result = this.service.get(id);
+    const result = await this.service.get(id);
 
     res.json(result);
   }
 
-  getAll(req: Request, res: Response) {
+  async getAll(req: Request, res: Response) {
     const dto = validation(FindAllTaskQueryDto, req.query);
-    const result = this.service.all(dto);
+    const result = await this.service.all(dto);
 
     res.json({ ...result, ...dto });
   }
