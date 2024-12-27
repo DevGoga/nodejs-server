@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
-import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
 import { RegistrationUserDto } from './dto/registration-user.dto';
 import { UserService } from './user.service';
@@ -31,7 +30,7 @@ export class UserController extends BaseController {
       //   res.status(501).send('Not implemented');
       // });
 
-      { path: '/profile', method: 'get', handler: this.profile, middleware: [AuthGuard] },
+      { path: '/profile', method: 'get', handler: this.profile, middleware: [] }, // AuthGuard
       // userRouter.get('', (req, res) => {
       //   res.status(501).send('Not implemented');
       // });
@@ -61,14 +60,15 @@ export class UserController extends BaseController {
     res.json(result);
   }
 
-  profile(req: Request, res: Response) {
-    const id = req.session.user?.id;
+  async profile(req: Request, res: Response) {
+    // const id = req.session.user?.id;
+    const id = 1;
 
     if (!id) {
       throw new Error('Unauthorized');
     }
 
-    const result = this.service.profile(id);
+    const result = await this.service.profile(id);
 
     res.json(result);
   }

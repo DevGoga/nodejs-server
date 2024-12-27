@@ -1,6 +1,6 @@
 import { hashSync } from 'bcrypt';
 import { appConfig } from '../../config';
-import { UserModel } from '../../database/models';
+import { TaskModel, UserModel } from '../../database/models';
 import { RegistrationUserDto } from './dto/registration-user.dto';
 import { UserRepository } from './user.repository';
 import { User } from './user.types';
@@ -20,8 +20,10 @@ export class UserService {
     return UserModel.create({ ...dto, password: hash });
   }
 
-  profile(id: User['id']) {
-    const user = this.repository.read(id);
+  async profile(id: User['id']) {
+    const user = await UserModel.findByPk(id, {
+      include: [TaskModel],
+    });
 
     if (user === null) {
       throw new Error(`Profile with id:${id} not found`);
