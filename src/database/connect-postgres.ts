@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize-typescript';
+import { TaskModel } from './models';
 
 export const connectPostgres = async (): Promise<void> => {
   const sequelize = new Sequelize({
@@ -11,7 +12,9 @@ export const connectPostgres = async (): Promise<void> => {
     port: 5432,
   });
 
+  sequelize.addModels([TaskModel]);
   await sequelize.authenticate();
+  await sequelize.sync({ alter: true });
 
   console.log('Connected Postgres');
 };
