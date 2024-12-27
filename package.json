@@ -22,7 +22,10 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
-    "reflect-metadata": "^0.2.2"
+    "pg": "^8.13.1",
+    "reflect-metadata": "^0.2.2",
+    "sequelize": "^6.37.5",
+    "sequelize-typescript": "^2.1.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.16.0",
