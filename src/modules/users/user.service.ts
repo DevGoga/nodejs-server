@@ -30,7 +30,7 @@ export class UserService {
   }
 
   login(dto: RegistrationUserDto) {
-    const user = this.repository.findByNick(dto.nick);
+    const user = this.repository.findByNickAndPassword(dto.nick, dto.password);
 
     if (user === null) {
       throw new Error(`A user with this nickname: ${dto.nick} is missing`);

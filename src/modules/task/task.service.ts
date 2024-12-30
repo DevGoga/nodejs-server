@@ -1,5 +1,5 @@
 import { UpdateTaskBodyDto } from '../../common';
-import { NotFoundException } from '../../errors';
+import { NotFoundException } from '../../exception';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
 import { TaskRepository } from './task.repository';
@@ -8,8 +8,8 @@ import { Task } from './task.types';
 export class TaskService {
   constructor(private readonly repository: TaskRepository) {}
 
-  create(dto: CreateTaskDto) {
-    return this.repository.create(dto);
+  create(dto: CreateTaskDto, authorId: number) {
+    return this.repository.create({ ...dto, authorId });
   }
 
   delete(id: Task['id']) {
