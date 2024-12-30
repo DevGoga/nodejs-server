@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { IdNumberDto, UpdateTaskBodyDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
-import { UnauthorizedException } from '../../exception';
+import { ForbiddenException, UnauthorizedException } from '../../exception';
 import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
 import { CreateTaskDto } from './dto';
@@ -47,10 +47,17 @@ export class TaskController extends BaseController {
   }
 
   delete(req: Request, res: Response) {
-    const id = req.session.user?.id;
+    const { id } = validation(IdNumberDto, req.params);
+    const userId = req.session.user?.id;
 
-    if (!id) {
+    if (!userId) {
       throw new UnauthorizedException();
+    }
+
+    const task = this.service.get(id);
+
+    if (!task || task.authorId !== userId) {
+      throw new ForbiddenException();
     }
 
     const result = this.service.delete(id);
@@ -66,6 +73,12 @@ export class TaskController extends BaseController {
 
     if (!userId) {
       throw new UnauthorizedException();
+    }
+
+    const task = this.service.get(id);
+
+    if (!task || task.authorId !== userId) {
+      throw new ForbiddenException();
     }
 
     const result = this.service.update(id, dto);
