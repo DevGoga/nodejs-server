@@ -11,6 +11,7 @@ export type EnvStructure<T = any> = {
 const config: EnvStructure<AppConfig> = {
   passwordRounds: process.env.PASSWORD_ROUNDS,
   port: process.env.PORT,
+  redisUrl: process.env.REDIS_URL,
 };
 
 export const appConfig = validation(AppConfig, config);

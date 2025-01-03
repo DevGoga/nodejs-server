@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsInt } from 'class-validator';
+import { IsInt, IsString } from 'class-validator';
 
 export class AppConfig {
   @IsInt()
@@ -9,4 +9,7 @@ export class AppConfig {
   @IsInt()
   @Type(() => Number)
   port: number;
+
+  @IsString()
+  redisUrl: string;
 }

@@ -29,7 +29,7 @@ export class Server {
   }
 
   async init() {
-    await this.connectPostgres();
+    // await this.connectPostgres();
 
     this.initMiddlewares();
     this.initControllers();
