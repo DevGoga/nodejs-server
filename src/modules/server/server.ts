@@ -1,5 +1,6 @@
 import express, { Express, Request } from 'express';
 import { inject, injectable } from 'inversify';
+import { Sequelize } from 'sequelize-typescript';
 import { logRoutes } from '../../bootstrap';
 import { appConfig } from '../../config';
 import { NotFoundException } from '../../exception';
@@ -17,7 +18,19 @@ export class Server {
     this.server = express();
   }
 
+  private async connectPostgres() {
+    const config = {}; // AppConfig
+
+    const sequelize = new Sequelize(config);
+
+    sequelize.addModels([]);
+
+    await sequelize.sync({ alter: true });
+  }
+
   async init() {
+    await this.connectPostgres();
+
     this.initMiddlewares();
     this.initControllers();
     this.initDefaultRouteNotFoundException();
