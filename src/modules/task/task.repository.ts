@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { UpdateTaskBodyDto } from '../../common';
 import { SortDirection } from '../../common/sort-direction.enum';
 import { FindAllTaskQueryDto, TaskSortBy } from './dto/find-all-task-query.dto';
+import { UpdateTaskBodyDto } from './dto/update-task.dto';
 import { Task } from './task.types';
 
 let storage: Task[] = [];

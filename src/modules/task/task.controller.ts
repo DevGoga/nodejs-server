@@ -1,16 +1,18 @@
 import { Request, Response } from 'express';
-import { IdNumberDto, UpdateTaskBodyDto } from '../../common';
+import { inject, injectable } from 'inversify';
+import { IdNumberDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
-import { ForbiddenException, UnauthorizedException } from '../../exception';
 import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
-import { CreateTaskDto } from './dto';
-import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
 import { TaskService } from './task.service';
 
+@injectable()
 export class TaskController extends BaseController {
-  constructor(private readonly service: TaskService) {
+  constructor(
+    @inject(TaskService)
+    private readonly service: TaskService,
+  ) {
     super();
     this.initRoutes();
   }
@@ -33,58 +35,11 @@ export class TaskController extends BaseController {
     this.addRoute(routes);
   }
 
-  create(req: Request, res: Response) {
-    const dto = validation(CreateTaskDto, req.body);
-    const authorId = req.session.user?.id;
+  create(req: Request, res: Response) {}
 
-    if (!authorId) {
-      throw new UnauthorizedException();
-    }
+  delete(req: Request, res: Response) {}
 
-    const result = this.service.create(dto, authorId);
-
-    res.json(result);
-  }
-
-  delete(req: Request, res: Response) {
-    const { id } = validation(IdNumberDto, req.params);
-    const userId = req.session.user?.id;
-
-    if (!userId) {
-      throw new UnauthorizedException();
-    }
-
-    const task = this.service.get(id);
-
-    if (!task || task.authorId !== userId) {
-      throw new ForbiddenException();
-    }
-
-    const result = this.service.delete(id);
-
-    res.json(result);
-  }
-
-  update(req: Request, res: Response) {
-    const dto = validation(UpdateTaskBodyDto, req.body);
-    const { id } = validation(IdNumberDto, req.params);
-
-    const userId = req.session.user?.id;
-
-    if (!userId) {
-      throw new UnauthorizedException();
-    }
-
-    const task = this.service.get(id);
-
-    if (!task || task.authorId !== userId) {
-      throw new ForbiddenException();
-    }
-
-    const result = this.service.update(id, dto);
-
-    res.json(result);
-  }
+  update(req: Request, res: Response) {}
 
   getById(req: Request, res: Response) {
     const { id } = validation(IdNumberDto, req.params);
@@ -93,12 +48,7 @@ export class TaskController extends BaseController {
     res.json(result);
   }
 
-  getAll(req: Request, res: Response) {
-    const dto = validation(FindAllTaskQueryDto, req.query);
-    const result = this.service.all(dto);
-
-    res.json({ ...result, ...dto });
-  }
+  getAll(req: Request, res: Response) {}
 }
 
 export default TaskController;
