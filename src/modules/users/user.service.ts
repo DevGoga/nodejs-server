@@ -1,5 +1,6 @@
-import { hashSync } from 'bcrypt';
+import { compareSync, hashSync } from 'bcrypt';
 import { appConfig } from '../../config';
+import { UnauthorizedException } from '../../exception';
 import { RegistrationUserDto } from './dto/registration-user.dto';
 import { UserRepository } from './user.repository';
 import { User } from './user.types';
@@ -30,10 +31,16 @@ export class UserService {
   }
 
   login(dto: RegistrationUserDto) {
-    const user = this.repository.findByNickAndPassword(dto.nick, dto.password);
+    const user = this.repository.findByNick(dto.nick);
 
     if (user === null) {
-      throw new Error(`A user with this nickname: ${dto.nick} is missing`);
+      throw new UnauthorizedException(`A user with this nickname: ${dto.nick} is missing`);
+    }
+
+    const validHash = compareSync(dto.password, user.password);
+
+    if (!validHash) {
+      throw new UnauthorizedException(`A user with this password is missing`);
     }
 
     return user;

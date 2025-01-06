@@ -26,10 +26,6 @@ export class UserRepository {
     return storage.find((user) => user.nick === nick) ?? null;
   }
 
-  findByNickAndPassword(nick: User['nick'], password: User['password']) {
-    return storage.find((user) => user.nick === nick && user.password === password) ?? null;
-  }
-
   read(id: User['id']): User | null {
     return storage.find((user) => user.id === id) ?? null;
   }
