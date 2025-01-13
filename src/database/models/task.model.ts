@@ -1,5 +1,5 @@
 import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
-import { UserModel } from '../../../express/src/database/models';
+import { UserModel } from './user.model';
 
 export enum TaskSeverity {
   low = 'low',
