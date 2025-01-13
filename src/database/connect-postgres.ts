@@ -1,14 +1,15 @@
 import { Sequelize } from 'sequelize-typescript';
+import { appConfig } from '../config';
 
 export const connectPostgres = async (): Promise<void> => {
   const sequelize = new Sequelize({
     dialect: 'postgres',
     logging: false,
-    host: 'localhost',
-    database: 'express',
-    username: 'postgres',
-    password: 'postgrespassword',
-    port: 5432,
+    host: appConfig.postgresHost,
+    database: appConfig.postgresdDb,
+    username: appConfig.postgresUser,
+    password: appConfig.postgresPassword,
+    port: appConfig.postgresPort,
   });
 
   await sequelize.sync();

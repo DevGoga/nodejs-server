@@ -11,6 +11,11 @@ export type EnvStructure<T = any> = {
 const config: EnvStructure<AppConfig> = {
   passwordRounds: process.env.PASSWORD_ROUNDS,
   port: process.env.PORT,
+  postgresUser: process.env.POSTGRES_USER,
+  postgresPassword: process.env.POSTGRES_PASSWORD,
+  postgresHost: process.env.POSTGRES_HOST,
+  postgresPort: process.env.POSTGRES_PORT,
+  postgresdDb: process.env.POSTGRES_DB,
 };
 
 export const appConfig = validation(AppConfig, config);
