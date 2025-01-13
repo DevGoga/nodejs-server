@@ -1,36 +1,45 @@
-import { UpdateTaskBodyDto } from '../../common';
-import { NotFoundException } from '../../exception';
+import { injectable } from 'inversify';
+import { NotFoundException } from '../../../express/src/errors';
+import { TaskModel } from '../../database/models';
 import { CreateTaskDto } from './dto';
-import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
-import { TaskRepository } from './task.repository';
-import { Task } from './task.types';
+import { FindAllTaskQueryDto, TaskSortBy } from './dto/find-all-task-query.dto';
 
+@injectable()
 export class TaskService {
-  constructor(private readonly repository: TaskRepository) {}
-
-  create(dto: CreateTaskDto, authorId: number) {
-    return this.repository.create({ ...dto, authorId });
+  async create(dto: CreateTaskDto, authorId: number) {
+    return await TaskModel.create({ ...dto, authorId });
   }
 
-  delete(id: Task['id']) {
-    return { result: this.repository.delete(id) };
-  }
+  async get(id: TaskModel['id']) {
+    const task = await TaskModel.findByPk(id);
 
-  update(id: Task['id'], dto: UpdateTaskBodyDto) {
-    const task = this.repository.getById(id);
-
-    if (task === null) {
-      throw new NotFoundException(`Task ${id} not found`);
+    if (!task) {
+      throw new NotFoundException(`Task with id [${id}] is not exist`);
     }
 
-    return this.repository.update(id, dto);
+    return task;
   }
 
-  get(id: Task['id']) {
-    return this.repository.getById(id);
+  async delete(id: TaskModel['id']) {
+    await this.get(id);
+
+    return TaskModel.destroy({ where: { id } });
   }
 
-  all(dto: FindAllTaskQueryDto) {
-    return this.repository.getAll(dto);
+  async update(id: TaskModel['id'], dto: CreateTaskDto) {
+    await this.get(id);
+
+    return TaskModel.update(dto, { where: { id }, returning: true });
+  }
+
+  async all(dto: FindAllTaskQueryDto) {
+    const { limit, offset } = dto;
+    const { rows, count } = await TaskModel.findAndCountAll({
+      limit,
+      offset,
+      order: [TaskSortBy.id],
+    });
+
+    return { total: count, limit, offset, data: rows };
   }
 }
