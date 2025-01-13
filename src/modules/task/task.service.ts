@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
-import { NotFoundException } from '../../../express/src/errors';
 import { TaskModel } from '../../database/models';
+import { NotFoundException } from '../../exception';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskQueryDto, TaskSortBy } from './dto/find-all-task-query.dto';
 
