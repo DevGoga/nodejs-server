@@ -4,7 +4,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { logRoutes } from '../../bootstrap';
 import { appConfig } from '../../config';
 import { models } from '../../database/models/models';
-import { NotFoundException } from '../../exception';
+import { NotFoundException } from '../../exceptions';
 import { ErrorHandler, logRequestMiddleware, privateRoutes, rateLimiter, SessionMiddleware } from '../../middlewares';
 import { TaskController } from '../task';
 
@@ -39,16 +39,16 @@ export class Server {
 
   async init() {
     await this.connectPostgres();
-    this.initMiddleware();
+    this.initMiddlewares();
     this.initController();
     this.initDefaultRoutNotFoundException();
-    this.ErrorHandler();
+    this.errorHandler();
     this.start();
 
     logRoutes(this.server);
   }
 
-  private initMiddleware() {
+  private initMiddlewares() {
     this.server.use(express.json());
     this.server.use(SessionMiddleware);
     this.server.use(privateRoutes);
@@ -56,7 +56,7 @@ export class Server {
     this.server.use(rateLimiter);
   }
 
-  private ErrorHandler() {
+  private errorHandler() {
     this.server.use(ErrorHandler);
   }
 
@@ -66,7 +66,7 @@ export class Server {
 
   private initDefaultRoutNotFoundException() {
     this.server.use((req: Request) => {
-      throw new NotFoundException(`Route ${req.originalUrl} not found.`);
+      throw new NotFoundException(`Routes ${req.originalUrl} not found.`);
     });
   }
 

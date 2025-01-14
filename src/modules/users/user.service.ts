@@ -1,6 +1,6 @@
 import { compareSync, hashSync } from 'bcrypt';
 import { appConfig } from '../../config';
-import { UnauthorizedException } from '../../exception';
+import { UnauthorizedException } from '../../exceptions';
 import { RegistrationUserDto } from './dto/registration-user.dto';
 import { UserRepository } from './user.repository';
 import { User } from './user.types';
@@ -37,9 +37,9 @@ export class UserService {
       throw new UnauthorizedException(`A user with this nickname: ${dto.nick} is missing`);
     }
 
-    const validHash = compareSync(dto.password, user.password);
+    const isHashValid = compareSync(dto.password, user.password);
 
-    if (!validHash) {
+    if (!isHashValid) {
       throw new UnauthorizedException(`A user with this password is missing`);
     }
 

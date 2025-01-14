@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
-import { TaskModel } from '../../database/models';
-import { NotFoundException } from '../../exception';
+import { TaskModel, UserModel } from '../../database/models';
+import { ForbiddenException, NotFoundException } from '../../exceptions';
 import { CreateTaskDto } from './dto';
 import { FindAllTaskQueryDto, TaskSortBy } from './dto/find-all-task-query.dto';
 
@@ -20,14 +20,22 @@ export class TaskService {
     return task;
   }
 
-  async delete(id: TaskModel['id']) {
-    await this.get(id);
+  async delete(id: TaskModel['id'], userId: UserModel['id']) {
+    const task = await this.get(id);
+
+    if (userId !== task.authorId) {
+      throw new ForbiddenException(`User with id [${id}] is not exist`);
+    }
 
     return TaskModel.destroy({ where: { id } });
   }
 
-  async update(id: TaskModel['id'], dto: CreateTaskDto) {
-    await this.get(id);
+  async update(id: TaskModel['id'], dto: CreateTaskDto, userId: UserModel['id']) {
+    const task = await this.get(id);
+
+    if (userId !== task.authorId) {
+      throw new ForbiddenException(`User with id [${id}] is not exist`);
+    }
 
     return TaskModel.update(dto, { where: { id }, returning: true });
   }

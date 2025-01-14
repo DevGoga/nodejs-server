@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import { IdNumberDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
-import { ForbiddenException, UnauthorizedException } from '../../exception';
+import { UnauthorizedException } from '../../exceptions';
 import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
 import { CreateTaskDto } from './dto';
@@ -53,13 +53,7 @@ export class TaskController extends BaseController {
       throw new UnauthorizedException();
     }
 
-    const task = this.taskService.get(id);
-
-    if (!task) {
-      throw new ForbiddenException();
-    }
-
-    const result = this.taskService.delete(id);
+    const result = this.taskService.delete(id, userId);
 
     res.json(result);
   }
@@ -74,13 +68,7 @@ export class TaskController extends BaseController {
       throw new UnauthorizedException();
     }
 
-    const task = this.taskService.get(id);
-
-    if (!task) {
-      throw new ForbiddenException();
-    }
-
-    const result = this.taskService.update(id, dto);
+    const result = this.taskService.update(id, dto, userId);
 
     res.json(result);
   }

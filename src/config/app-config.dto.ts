@@ -11,15 +11,12 @@ export class AppConfig {
   port: number;
 
   @IsString()
-  @Type(() => String)
   postgresUser: string;
 
   @IsString()
-  @Type(() => String)
   postgresPassword: string;
 
   @IsString()
-  @Type(() => String)
   postgresHost: string;
 
   @IsNumber()
@@ -27,6 +24,5 @@ export class AppConfig {
   postgresPort: number;
 
   @IsString()
-  @Type(() => String)
   postgresdDb: string;
 }

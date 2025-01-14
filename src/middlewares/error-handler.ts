@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { BadRequestException, ForbiddenException, NotFoundException, UnauthorizedException } from '../exception';
+import { BadRequestException, ForbiddenException, NotFoundException, UnauthorizedException } from '../exceptions';
 
 export const ErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   if (!err) next();

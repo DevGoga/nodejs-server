@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
-import { UnauthorizedException } from '../../exception';
+import { UnauthorizedException } from '../../exceptions';
 import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
 import { RegistrationUserDto } from './dto/registration-user.dto';

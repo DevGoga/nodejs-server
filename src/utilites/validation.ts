@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
-import { BadRequestException } from '../exception';
+import { BadRequestException } from '../exceptions';
 
 export function validation<T extends object, V>(dtoClass: { new (): T }, data: V): T {
   const dto = plainToInstance<T, V>(dtoClass, data);

@@ -1,4 +1,4 @@
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { UserModel } from './user.model';
 
 export enum TaskSeverity {
@@ -37,4 +37,11 @@ export class TaskModel extends Model {
     allowNull: false,
   })
   public authorId: number;
+
+  @BelongsTo(() => UserModel, {
+    as: 'author',
+    foreignKey: 'authorId',
+    onDelete: 'CASCADE',
+  })
+  public author: UserModel;
 }
