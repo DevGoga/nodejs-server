@@ -1,39 +1,40 @@
 import { compareSync, hashSync } from 'bcrypt';
+import { injectable } from 'inversify';
 import { appConfig } from '../../config';
-import { UnauthorizedException } from '../../exceptions';
+import { UserModel } from '../../database/models';
+import { BadRequestException, NotFoundException, UnauthorizedException } from '../../exceptions';
 import { RegistrationUserDto } from './dto/registration-user.dto';
-import { UserRepository } from './user.repository';
-import { User } from './user.types';
 
+@injectable()
 export class UserService {
-  constructor(private readonly repository: UserRepository) {}
-
-  registration(dto: RegistrationUserDto): User {
-    const user = this.repository.findByNick(dto.nick);
+  async registration(dto: RegistrationUserDto) {
+    const user = await UserModel.findOne({ where: { nick: dto.nick } });
 
     if (user) {
-      throw new Error(`A user with this nickname already exists`);
+      throw new BadRequestException(`A user with this nickname already exists`);
     }
 
     const hash = hashSync(dto.password, appConfig.passwordRounds);
 
-    return this.repository.save({ ...dto, password: hash });
+    await UserModel.create({ nick: dto.nick, password: hash });
+
+    return true;
   }
 
-  profile(id: User['id']) {
-    const user = this.repository.read(id);
+  async profile(id: UserModel['id']) {
+    const user = await UserModel.findByPk(id);
 
-    if (user === null) {
-      throw new Error(`Profile with id:${id} not found`);
+    if (!user) {
+      throw new NotFoundException();
     }
 
     return user;
   }
 
-  login(dto: RegistrationUserDto) {
-    const user = this.repository.findByNick(dto.nick);
+  async login(dto: RegistrationUserDto) {
+    const user = await UserModel.findOne({ where: { nick: dto.nick } });
 
-    if (user === null) {
+    if (!user) {
       throw new UnauthorizedException(`A user with this nickname: ${dto.nick} is missing`);
     }
 

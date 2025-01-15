@@ -1,5 +1,4 @@
 import expressSession from 'express-session';
-import { User } from '../modules/users/user.types';
 
 export const SessionMiddleware = expressSession({
   secret: 'my_secret',
@@ -10,6 +9,6 @@ export const SessionMiddleware = expressSession({
 
 declare module 'express-session' {
   interface SessionData {
-    user: User;
+    user: any; // с UserModel почему то ругается
   }
 }

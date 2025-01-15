@@ -7,6 +7,7 @@ import { models } from '../../database/models/models';
 import { NotFoundException } from '../../exceptions';
 import { ErrorHandler, logRequestMiddleware, privateRoutes, rateLimiter, SessionMiddleware } from '../../middlewares';
 import { TaskController } from '../task';
+import { UserController } from '../users/user.controller';
 
 @injectable()
 export class Server {
@@ -15,6 +16,9 @@ export class Server {
   constructor(
     @inject(TaskController)
     private readonly taskController: TaskController,
+
+    @inject(UserController)
+    private readonly userController: UserController,
   ) {
     this.server = express();
   }
@@ -62,6 +66,7 @@ export class Server {
 
   private initController() {
     this.server.use('/task', this.taskController.router);
+    this.server.use('/user', this.userController.router);
   }
 
   private initDefaultRoutNotFoundException() {

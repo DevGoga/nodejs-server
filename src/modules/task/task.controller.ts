@@ -6,7 +6,7 @@ import { Route } from '../../common/types';
 import { UnauthorizedException } from '../../exceptions';
 import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
-import { CreateTaskDto } from './dto';
+import { CreateTaskDto, UpdateTaskDto } from './dto';
 import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
 import { TaskService } from './task.service';
 
@@ -59,7 +59,7 @@ export class TaskController extends BaseController {
   }
 
   update(req: Request, res: Response) {
-    const dto = validation(CreateTaskDto, req.body);
+    const dto = validation(UpdateTaskDto, req.body);
     const { id } = validation(IdNumberDto, req.params);
 
     const userId = req.session.user?.id;
