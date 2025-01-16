@@ -37,7 +37,7 @@ export class TaskService {
       throw new ForbiddenException();
     }
 
-    return TaskModel.update(dto, { where: { id }, returning: true });
+    return task.update(dto);
   }
 
   async all(dto: FindAllTaskQueryDto) {

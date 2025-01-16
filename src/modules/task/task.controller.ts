@@ -45,7 +45,7 @@ export class TaskController extends BaseController {
     res.json(result);
   }
 
-  delete(req: Request, res: Response) {
+  async delete(req: Request, res: Response) {
     const { id } = validation(IdNumberDto, req.params);
     const userId = req.session.user?.id;
 
@@ -53,12 +53,12 @@ export class TaskController extends BaseController {
       throw new UnauthorizedException();
     }
 
-    const result = this.taskService.delete(id, userId);
+    const result = await this.taskService.delete(id, userId);
 
     res.json(result);
   }
 
-  update(req: Request, res: Response) {
+  async update(req: Request, res: Response) {
     const dto = validation(UpdateTaskDto, req.body);
     const { id } = validation(IdNumberDto, req.params);
 
@@ -68,21 +68,21 @@ export class TaskController extends BaseController {
       throw new UnauthorizedException();
     }
 
-    const result = this.taskService.update(id, dto, userId);
+    const result = await this.taskService.update(id, dto, userId);
 
     res.json(result);
   }
 
-  getById(req: Request, res: Response) {
+  async getById(req: Request, res: Response) {
     const { id } = validation(IdNumberDto, req.params);
-    const result = this.taskService.get(id);
+    const result = await this.taskService.get(id);
 
     res.json(result);
   }
 
-  getAll(req: Request, res: Response) {
+  async getAll(req: Request, res: Response) {
     const dto = validation(FindAllTaskQueryDto, req.query);
-    const result = this.taskService.all(dto);
+    const result = await this.taskService.all(dto);
 
     res.json({ ...result, ...dto });
   }
