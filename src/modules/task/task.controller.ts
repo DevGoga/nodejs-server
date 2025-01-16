@@ -75,7 +75,7 @@ export class TaskController extends BaseController {
 
   async getById(req: Request, res: Response) {
     const { id } = validation(IdNumberDto, req.params);
-    const result = await this.taskService.get(id);
+    const result = await this.taskService.getIdNick(id);
 
     res.json(result);
   }
