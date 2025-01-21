@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
+import { IdNumberDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
 import { UnauthorizedException } from '../../exceptions';
 import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
-import { RegistrationUserDto } from './dto/registration-user.dto';
+import { RegistrationUserDto, UpdateUserDto } from './dto';
 import { UserService } from './user.service';
 
 @injectable()
@@ -23,6 +24,7 @@ export class UserController extends BaseController {
       { path: '/register', method: 'post', handler: this.registration },
       { path: '/login', method: 'post', handler: this.login },
       { path: '/profile', method: 'get', handler: this.profile, middleware: [AuthGuard] },
+      { path: '/update/:id', method: 'put', handler: this.update, middleware: [AuthGuard] },
     ];
 
     this.addRoute(routes);
@@ -54,6 +56,15 @@ export class UserController extends BaseController {
     const result = await this.userService.login(dto);
 
     req.session.user = result;
+
+    res.json(result);
+  }
+
+  async update(req: Request, res: Response) {
+    const dto = validation(UpdateUserDto, req.body);
+    const { id } = validation(IdNumberDto, req.params);
+
+    const result = await this.userService.update(id, dto);
 
     res.json(result);
   }

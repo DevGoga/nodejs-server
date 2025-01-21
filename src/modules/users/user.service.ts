@@ -3,7 +3,7 @@ import { injectable } from 'inversify';
 import { appConfig } from '../../config';
 import { UserModel } from '../../database/models';
 import { BadRequestException, NotFoundException, UnauthorizedException } from '../../exceptions';
-import { RegistrationUserDto } from './dto/registration-user.dto';
+import { RegistrationUserDto, UpdateUserDto } from './dto';
 
 @injectable()
 export class UserService {
@@ -45,5 +45,15 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async update(id: UserModel['id'], dto: UpdateUserDto) {
+    const user = await UserModel.findByPk(id);
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    return user.update(dto);
   }
 }
