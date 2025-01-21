@@ -1,15 +1,13 @@
-import { IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
-import { Severity } from '..';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { Severity } from './create-task.dto';
 
-export class UpdateTaskBodyDto {
+export class UpdateTaskDto {
   @IsOptional()
   @IsString()
-  @MinLength(1)
   title?: string;
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
   description?: string;
 
   @IsOptional()

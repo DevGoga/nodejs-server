@@ -1,7 +1,12 @@
+import { Container } from 'inversify';
 import TaskController from './task.controller';
-import { TaskRepository } from './task.repository';
 import { TaskService } from './task.service';
 
-const repository = new TaskRepository();
-const service = new TaskService(repository);
-export const taskController = new TaskController(service);
+export const createTaskModule = () => {
+  const container = new Container();
+
+  container.bind(TaskService).to(TaskService).inSingletonScope();
+  container.bind(TaskController).to(TaskController).inSingletonScope();
+
+  return container;
+};

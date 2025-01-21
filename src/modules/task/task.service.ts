@@ -1,36 +1,70 @@
-import { UpdateTaskBodyDto } from '../../common';
-import { NotFoundException } from '../../errors';
-import { CreateTaskDto } from './dto';
-import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
-import { TaskRepository } from './task.repository';
-import { Task } from './task.types';
+import { injectable } from 'inversify';
+import { TaskModel, UserModel } from '../../database/models';
+import { ForbiddenException, NotFoundException } from '../../exceptions';
+import { CreateTaskDto, UpdateTaskDto } from './dto';
+import { FindAllTaskQueryDto, TaskSortBy } from './dto/find-all-task-query.dto';
 
+@injectable()
 export class TaskService {
-  constructor(private readonly repository: TaskRepository) {}
-
-  create(dto: CreateTaskDto) {
-    return this.repository.create(dto);
+  async create(dto: CreateTaskDto, authorId: number) {
+    return await TaskModel.create({ ...dto, authorId });
   }
 
-  delete(id: Task['id']) {
-    return { result: this.repository.delete(id) };
-  }
+  async get(id: TaskModel['id']) {
+    const task = await TaskModel.findByPk(id);
 
-  update(id: Task['id'], dto: UpdateTaskBodyDto) {
-    const task = this.repository.getById(id);
-
-    if (task === null) {
-      throw new NotFoundException(`Task ${id} not found`);
+    if (!task) {
+      throw new NotFoundException(`Task with id [${id}] is not exist`);
     }
 
-    return this.repository.update(id, dto);
+    return task;
   }
 
-  get(id: Task['id']) {
-    return this.repository.getById(id);
+  async getIdNick(id: TaskModel['id']) {
+    const task = await TaskModel.findByPk(id, {
+      include: [
+        {
+          model: UserModel,
+          attributes: ['id', 'nick'],
+        },
+      ],
+    });
+
+    if (!task) {
+      throw new NotFoundException(`Task with id [${id}] is not exist`);
+    }
+
+    return task;
   }
 
-  all(dto: FindAllTaskQueryDto) {
-    return this.repository.getAll(dto);
+  async delete(id: TaskModel['id'], userId: UserModel['id']) {
+    const task = await this.get(id);
+
+    if (userId !== task.authorId) {
+      throw new ForbiddenException();
+    }
+
+    return TaskModel.destroy({ where: { id } });
+  }
+
+  async update(id: TaskModel['id'], dto: UpdateTaskDto, userId: UserModel['id']) {
+    const task = await this.get(id);
+
+    if (userId !== task.authorId) {
+      throw new ForbiddenException();
+    }
+
+    return task.update(dto);
+  }
+
+  async all(dto: FindAllTaskQueryDto) {
+    const { limit, offset } = dto;
+    const { rows, count } = await TaskModel.findAndCountAll({
+      limit,
+      offset,
+      order: [TaskSortBy.id],
+    });
+
+    return { total: count, limit, offset, data: rows };
   }
 }

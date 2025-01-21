@@ -1,7 +1,12 @@
+import { Container } from 'inversify';
 import { UserController } from './user.controller';
-import { UserRepository } from './user.repository';
 import { UserService } from './user.service';
 
-const repository = new UserRepository();
-const service = new UserService(repository);
-export const userController = new UserController(service);
+export const createUserModule = () => {
+  const container = new Container();
+
+  container.bind(UserService).to(UserService).inSingletonScope();
+  container.bind(UserController).to(UserController).inSingletonScope();
+
+  return container;
+};

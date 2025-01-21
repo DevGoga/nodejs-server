@@ -1,68 +1,88 @@
 import { Request, Response } from 'express';
-import { IdNumberDto, UpdateTaskBodyDto } from '../../common';
+import { inject, injectable } from 'inversify';
+import { IdNumberDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
+import { UnauthorizedException } from '../../exceptions';
+import { AuthGuard } from '../../guards';
 import { validation } from '../../utilites';
-import { CreateTaskDto } from './dto';
+import { CreateTaskDto, UpdateTaskDto } from './dto';
 import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
 import { TaskService } from './task.service';
 
+@injectable()
 export class TaskController extends BaseController {
-  constructor(private readonly service: TaskService) {
+  constructor(
+    @inject(TaskService)
+    private readonly taskService: TaskService,
+  ) {
     super();
     this.initRoutes();
   }
 
   initRoutes() {
     const routes: Route[] = [
-      { path: '', method: 'post', handler: this.create },
-      // { path: '/:id/time', method: 'post', handler: ?},
-
+      { path: '', method: 'post', handler: this.create, middleware: [AuthGuard] },
       { path: '', method: 'get', handler: this.getAll },
       { path: '/:id', method: 'get', handler: this.getById },
-      // { path: '/my/authored', method: 'get', handler: ? },
-      // { path: '/my/assigned', method: 'get', handler: ? },
-
-      { path: '/:id', method: 'put', handler: this.update },
-
-      { path: '/:id', method: 'delete', handler: this.delete },
+      { path: '/:id', method: 'put', handler: this.update, middleware: [AuthGuard] },
+      { path: '/:id', method: 'delete', handler: this.delete, middleware: [AuthGuard] },
     ];
 
     this.addRoute(routes);
   }
 
-  create(req: Request, res: Response) {
+  async create(req: Request, res: Response) {
     const dto = validation(CreateTaskDto, req.body);
-    const result = this.service.create(dto);
+    const authorId = req.session.user?.id;
+
+    if (!authorId) {
+      throw new UnauthorizedException();
+    }
+
+    const result = await this.taskService.create(dto, authorId);
 
     res.json(result);
   }
 
-  delete(req: Request, res: Response) {
-    const dto = validation(IdNumberDto, req.params);
-    const result = this.service.delete(dto.id);
-
-    res.json(result);
-  }
-
-  update(req: Request, res: Response) {
-    const dto = validation(UpdateTaskBodyDto, req.body);
+  async delete(req: Request, res: Response) {
     const { id } = validation(IdNumberDto, req.params);
-    const result = this.service.update(id, dto);
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+
+    const result = await this.taskService.delete(id, userId);
 
     res.json(result);
   }
 
-  getById(req: Request, res: Response) {
+  async update(req: Request, res: Response) {
+    const dto = validation(UpdateTaskDto, req.body);
     const { id } = validation(IdNumberDto, req.params);
-    const result = this.service.get(id);
+
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+
+    const result = await this.taskService.update(id, dto, userId);
 
     res.json(result);
   }
 
-  getAll(req: Request, res: Response) {
+  async getById(req: Request, res: Response) {
+    const { id } = validation(IdNumberDto, req.params);
+    const result = await this.taskService.getIdNick(id);
+
+    res.json(result);
+  }
+
+  async getAll(req: Request, res: Response) {
     const dto = validation(FindAllTaskQueryDto, req.query);
-    const result = this.service.all(dto);
+    const result = await this.taskService.all(dto);
 
     res.json({ ...result, ...dto });
   }

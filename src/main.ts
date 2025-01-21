@@ -1,32 +1,17 @@
 import 'reflect-metadata';
-import express, { Request } from 'express';
-import { logRoutes } from './bootstrap';
-import { appConfig } from './config';
-import { NotFoundException } from './errors';
-import { ErrorHandler, logRequestMiddleware, privateRoutes, rateLimiter, SessionMiddleware } from './middlewares';
-import { taskController } from './modules/task/task.module';
-import { userController } from './modules/users/user.module';
+import 'express-async-errors';
+import { Container } from 'inversify';
+import { Server } from './modules/server/server';
+import { createServerModule } from './modules/server/server.modules';
+import { createTaskModule } from './modules/task/task.module';
+import { createUserModule } from './modules/users/user.module';
 
-const bootstrap = () => {
-  const server = express();
-  const port = appConfig.port;
+const bootstrap = async () => {
+  const app = Container.merge(createServerModule(), createTaskModule(), createUserModule());
 
-  server.use(express.json());
-  server.use(SessionMiddleware);
-  server.use(privateRoutes);
-  server.use(logRequestMiddleware);
-  server.use(rateLimiter);
-  server.use('/task', taskController.router);
-  server.use('/user', userController.router);
-  server.use((req: Request) => {
-    throw new NotFoundException(`Route ${req.originalUrl} not found.`);
-  });
+  const server = app.get<Server>(Server);
 
-  server.use(ErrorHandler);
-
-  logRoutes(server);
-
-  server.listen(port, () => console.log(`Server started on port ${port}`));
+  await server.init();
 };
 
 bootstrap();

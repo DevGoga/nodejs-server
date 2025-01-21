@@ -1,4 +1,4 @@
-export class NotAuthorized extends Error {
+export class UnauthorizedException extends Error {
   public readonly code = 401;
 
   constructor(message = 'Unauthorized') {
