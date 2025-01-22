@@ -27,6 +27,7 @@ export class TaskController extends BaseController {
       { path: '/:id', method: 'get', handler: this.getById },
       { path: '/:id', method: 'put', handler: this.update, middleware: [AuthGuard] },
       { path: '/:id', method: 'delete', handler: this.delete, middleware: [AuthGuard] },
+      { path: '/authored/:id', method: 'get', handler: this.getAllByTasks, middleware: [AuthGuard] },
     ];
 
     this.addRoute(routes);
@@ -85,6 +86,15 @@ export class TaskController extends BaseController {
     const result = await this.taskService.all(dto);
 
     res.json({ ...result, ...dto });
+  }
+
+  async getAllByTasks(req: Request, res: Response) {
+    const dto = validation(FindAllTaskQueryDto, req.query);
+    const { id } = validation(IdNumberDto, req.params);
+
+    const result = await this.taskService.getMyAuthored(id, dto);
+
+    res.json(result);
   }
 }
 

@@ -1,4 +1,5 @@
 import { injectable } from 'inversify';
+import { Op } from 'sequelize';
 import { TaskModel, UserModel } from '../../database/models';
 import { ForbiddenException, NotFoundException } from '../../exceptions';
 import { CreateTaskDto, UpdateTaskDto } from './dto';
@@ -60,6 +61,27 @@ export class TaskService {
   async all(dto: FindAllTaskQueryDto) {
     const { limit, offset } = dto;
     const { rows, count } = await TaskModel.findAndCountAll({
+      limit,
+      offset,
+      order: [TaskSortBy.id],
+    });
+
+    return { total: count, limit, offset, data: rows };
+  }
+
+  async getMyAuthored(id: UserModel['id'], dto: FindAllTaskQueryDto) {
+    const { limit, offset, sortBy, search } = dto;
+
+    const whereCondition = {
+      authorId: id,
+    };
+
+    if (search) {
+      whereCondition.title = { [Op.iLike]: `%${search}%` };
+    }
+
+    const { rows, count } = await TaskModel.findAndCountAll({
+      where: whereCondition,
       limit,
       offset,
       order: [TaskSortBy.id],
