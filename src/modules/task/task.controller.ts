@@ -24,10 +24,10 @@ export class TaskController extends BaseController {
     const routes: Route[] = [
       { path: '', method: 'post', handler: this.create, middleware: [AuthGuard] },
       { path: '', method: 'get', handler: this.getAll },
+      { path: '/authored', method: 'get', handler: this.getAllByTasks, middleware: [AuthGuard] },
       { path: '/:id', method: 'get', handler: this.getById },
       { path: '/:id', method: 'put', handler: this.update, middleware: [AuthGuard] },
       { path: '/:id', method: 'delete', handler: this.delete, middleware: [AuthGuard] },
-      { path: '/authored', method: 'get', handler: this.getAllByTasks, middleware: [AuthGuard] },
     ];
 
     this.addRoute(routes);
@@ -90,9 +90,13 @@ export class TaskController extends BaseController {
 
   async getAllByTasks(req: Request, res: Response) {
     const dto = validation(FindAllTaskQueryDto, req.query);
-    const { id } = validation(IdNumberDto, req.params);
+    const userId = req.session.user?.id;
 
-    const result = await this.taskService.getMyAuthored(id, dto);
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+
+    const result = await this.taskService.getMyAuthored(userId, dto);
 
     res.json(result);
   }

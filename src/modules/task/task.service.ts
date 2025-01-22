@@ -70,21 +70,18 @@ export class TaskService {
   }
 
   async getMyAuthored(id: UserModel['id'], dto: FindAllTaskQueryDto) {
-    const { limit, offset, sortBy, search } = dto;
+    const { limit = 10, offset = 0, sortBy = 'id', search } = dto;
 
-    const whereCondition = {
+    const where = {
       authorId: id,
+      ...(search ? { title: { [Op.iLike]: `%${search}%` } } : {}),
     };
 
-    if (search) {
-      whereCondition.title = { [Op.iLike]: `%${search}%` };
-    }
-
     const { rows, count } = await TaskModel.findAndCountAll({
-      where: whereCondition,
+      where,
       limit,
       offset,
-      order: [TaskSortBy.id],
+      order: [[sortBy, 'ASC']],
     });
 
     return { total: count, limit, offset, data: rows };
