@@ -13,6 +13,6 @@ export class UserModel extends Model {
   @Column({ type: DataType.STRING, allowNull: false, unique: true })
   public nick: string;
 
-  @Column({ type: DataType.STRING, allowNull: true })
+  @Column({ type: DataType.STRING, allowNull: false })
   public password: string;
 }
