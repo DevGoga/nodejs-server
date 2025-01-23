@@ -9,6 +9,6 @@ export const SessionMiddleware = expressSession({
 
 declare module 'express-session' {
   interface SessionData {
-    user: any; // с UserModel почему то ругается
+    user: { id: number };
   }
 }

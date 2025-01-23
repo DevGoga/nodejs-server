@@ -28,4 +28,7 @@ export class FindAllTaskQueryDto {
   @IsOptional()
   @IsEnum(SortDirection)
   sortDirection?: SortDirection;
+
+  @IsOptional()
+  search?: string;
 }

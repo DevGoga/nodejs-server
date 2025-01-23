@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
-import { IdNumberDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
 import { UnauthorizedException } from '../../exceptions';
@@ -24,7 +23,7 @@ export class UserController extends BaseController {
       { path: '/register', method: 'post', handler: this.registration },
       { path: '/login', method: 'post', handler: this.login },
       { path: '/profile', method: 'get', handler: this.profile, middleware: [AuthGuard] },
-      { path: '/update/:id', method: 'put', handler: this.update, middleware: [AuthGuard] },
+      { path: '/update', method: 'put', handler: this.update, middleware: [AuthGuard] },
     ];
 
     this.addRoute(routes);
@@ -62,7 +61,11 @@ export class UserController extends BaseController {
 
   async update(req: Request, res: Response) {
     const dto = validation(UpdateUserDto, req.body);
-    const { id } = validation(IdNumberDto, req.params);
+    const id = req.session.user?.id;
+
+    if (!id) {
+      throw new UnauthorizedException();
+    }
 
     const result = await this.userService.update(id, dto);
 
