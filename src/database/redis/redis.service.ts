@@ -9,7 +9,7 @@ export class RedisService {
   async connect(url: string): Promise<void> {
     if (this.redis) return;
 
-    const client = createClient({ url: url });
+    const client = createClient({ url });
     try {
       await client.connect();
     } catch (error) {
