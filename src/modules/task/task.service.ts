@@ -74,7 +74,9 @@ export class TaskService {
 
     const where = {
       authorId: id,
-      ...(search ? { title: { [Op.iLike]: `%${search}%` } } : {}),
+      ...(search
+        ? { [Op.or]: [{ title: { [Op.iLike]: `%${search}%` } }, { description: { [Op.iLike]: `%${search}%` } }] }
+        : {}),
     };
 
     const { rows, count } = await TaskModel.findAndCountAll({
