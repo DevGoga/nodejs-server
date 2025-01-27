@@ -27,19 +27,5 @@ export class AppConfig {
   postgresdDb: string;
 
   @IsString()
-  redisHost: string;
-
-  @IsNumber()
-  @Type(() => Number)
-  redisDb: number;
-
-  @IsString()
-  redisUsername: string;
-
-  @IsString()
-  redisPassword: string;
-
-  @IsNumber()
-  @Type(() => Number)
-  redisPort: number;
+  redisUrl: string;
 }

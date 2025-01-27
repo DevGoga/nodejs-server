@@ -1,19 +1,17 @@
-import { inject, injectable } from 'inversify';
-import { AppConfig } from '../../config/app-config.dto';
+import { SetOptions } from '@redis/client';
+import { injectable } from 'inversify';
+import { createClient } from 'redis';
 
 @injectable()
 export class RedisService {
   private redis: ReturnType<typeof createClient>;
 
-  constructor(
-    @inject(AppConfig)
-    private readonly config: AppConfig,
-  ) {}
+  constructor(private readonly config: string) {}
 
   async connect() {
     if (this.redis) return;
 
-    const client = createClient({ url: this.config.redisConnectionString });
+    const client = createClient({ url: this.config });
     try {
       await client.connect();
     } catch (error) {
