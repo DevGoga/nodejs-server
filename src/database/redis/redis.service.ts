@@ -6,12 +6,10 @@ import { createClient } from 'redis';
 export class RedisService {
   private redis: ReturnType<typeof createClient>;
 
-  constructor(private readonly config: string) {}
-
-  async connect() {
+  async connect(url: string): Promise<void> {
     if (this.redis) return;
 
-    const client = createClient({ url: this.config });
+    const client = createClient({ url: url });
     try {
       await client.connect();
     } catch (error) {

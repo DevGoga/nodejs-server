@@ -46,9 +46,7 @@ export class Server {
   }
 
   private async connectRedis() {
-    const redis = new RedisService(appConfig.redisUrl);
-
-    await redis.connect();
+    await this.redisService.connect(appConfig.redisUrl);
 
     console.log('Successfully connected to Redis');
   }
