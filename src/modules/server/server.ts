@@ -4,6 +4,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { logRoutes } from '../../bootstrap';
 import { appConfig } from '../../config';
 import { models } from '../../database/models/models';
+import { RedisService } from '../../database/redis/redis.service';
 import { NotFoundException } from '../../exceptions';
 import { ErrorHandler, logRequestMiddleware, privateRoutes, rateLimiter, SessionMiddleware } from '../../middlewares';
 import { TaskController } from '../task';
@@ -19,6 +20,9 @@ export class Server {
 
     @inject(UserController)
     private readonly userController: UserController,
+
+    @inject(RedisService)
+    private readonly redisService: RedisService,
   ) {
     this.server = express();
   }
@@ -41,12 +45,21 @@ export class Server {
     console.log('Successfully connected to database');
   }
 
+  private async connectRedis() {
+    await this.redisService.connect(appConfig.redisUrl);
+
+    console.log('Successfully connected to Redis');
+  }
+
   async init() {
     await this.connectPostgres();
+    await this.connectRedis();
+
     this.initMiddlewares();
     this.initController();
     this.initDefaultRoutNotFoundException();
     this.errorHandler();
+
     this.start();
 
     logRoutes(this.server);

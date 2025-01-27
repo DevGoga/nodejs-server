@@ -25,4 +25,7 @@ export class AppConfig {
 
   @IsString()
   postgresdDb: string;
+
+  @IsString()
+  redisUrl: string;
 }

@@ -1,4 +1,5 @@
 import { config as parseEnvFile } from 'dotenv';
+import * as process from 'node:process';
 import { validation } from '../utilites';
 import { AppConfig } from './app-config.dto';
 
@@ -16,6 +17,7 @@ const config: EnvStructure<AppConfig> = {
   postgresHost: process.env.POSTGRES_HOST,
   postgresPort: process.env.POSTGRES_PORT,
   postgresdDb: process.env.POSTGRES_DB,
+  redisUrl: process.env.REDIS_URL,
 };
 
 export const appConfig = validation(AppConfig, config);
