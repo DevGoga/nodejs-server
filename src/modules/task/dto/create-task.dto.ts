@@ -1,4 +1,4 @@
-import { IsEnum, IsString, MinLength } from 'class-validator';
+import { IsEnum, IsNumber, IsString, MinLength } from 'class-validator';
 
 export enum Severity {
   low = 'low',
@@ -14,6 +14,9 @@ export class CreateTaskDto {
   @IsString()
   @MinLength(1)
   description: string;
+
+  @IsNumber()
+  assigneeId: number;
 
   @IsEnum(Severity)
   severity: Severity;

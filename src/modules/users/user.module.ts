@@ -5,8 +5,8 @@ import { UserService } from './user.service';
 export const createUserModule = () => {
   const container = new Container();
 
-  container.bind(UserService).to(UserService).inSingletonScope();
-  container.bind(UserController).to(UserController).inSingletonScope();
+  container.bind(UserService).toSelf().inSingletonScope();
+  container.bind(UserController).toSelf().inSingletonScope();
 
   return container;
 };

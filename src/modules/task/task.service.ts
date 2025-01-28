@@ -8,6 +8,12 @@ import { FindAllTaskQueryDto, TaskSortBy } from './dto/find-all-task-query.dto';
 @injectable()
 export class TaskService {
   async create(dto: CreateTaskDto, authorId: number) {
+    const assignee = await UserModel.findOne({ where: { id: dto.assigneeId } });
+
+    if (!assignee) {
+      throw new NotFoundException(`User with id [${dto.assigneeId}] is not exist`);
+    }
+
     return await TaskModel.create({ ...dto, authorId });
   }
 

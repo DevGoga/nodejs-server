@@ -4,7 +4,7 @@ import { Server } from './server';
 export const createServerModule = (): Container => {
   const container = new Container();
 
-  container.bind(Server).to(Server).inSingletonScope();
+  container.bind(Server).toSelf().inSingletonScope();
 
   return container;
 };
