@@ -44,4 +44,18 @@ export class TaskModel extends Model {
     onDelete: 'CASCADE',
   })
   public author: UserModel;
+
+  @ForeignKey(() => UserModel)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  public assigneeId: number;
+
+  @BelongsTo(() => UserModel, {
+    as: 'assignee',
+    foreignKey: 'assigneeId',
+    onDelete: 'CASCADE',
+  })
+  public assignee: UserModel;
 }

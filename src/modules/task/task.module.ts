@@ -5,8 +5,8 @@ import { TaskService } from './task.service';
 export const createTaskModule = () => {
   const container = new Container();
 
-  container.bind(TaskService).to(TaskService).inSingletonScope();
-  container.bind(TaskController).to(TaskController).inSingletonScope();
+  container.bind(TaskService).toSelf().inSingletonScope();
+  container.bind(TaskController).toSelf().inSingletonScope();
 
   return container;
 };
