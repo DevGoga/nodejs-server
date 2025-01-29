@@ -51,4 +51,11 @@ export class TaskModel extends Model {
     allowNull: false,
   })
   public assigneeId: number;
+
+  @BelongsTo(() => UserModel, {
+    as: 'assignee',
+    foreignKey: 'assigneeId',
+    onDelete: 'CASCADE',
+  })
+  public assignee: UserModel;
 }
