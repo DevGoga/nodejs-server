@@ -94,4 +94,24 @@ export class TaskService {
 
     return { total: count, limit, offset, data: rows };
   }
+
+  async getMyAssigned(id: TaskModel['assigneeId'], dto: FindAllTaskQueryDto) {
+    const { limit = 10, offset = 0, sortBy = 'id', search } = dto;
+
+    const where = {
+      assigneeId: id,
+      ...(search
+        ? { [Op.or]: [{ title: { [Op.iLike]: `%${search}%` } }, { description: { [Op.iLike]: `%${search}%` } }] }
+        : {}),
+    };
+
+    const { rows, count } = await TaskModel.findAndCountAll({
+      where,
+      limit,
+      offset,
+      order: [[sortBy, 'ASC']],
+    });
+
+    return { total: count, limit, offset, data: rows };
+  }
 }
