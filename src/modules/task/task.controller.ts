@@ -25,6 +25,7 @@ export class TaskController extends BaseController {
       { path: '', method: 'post', handler: this.create, middleware: [AuthGuard] },
       { path: '', method: 'get', handler: this.getAll },
       { path: '/authored', method: 'get', handler: this.getAllByTasks, middleware: [AuthGuard] },
+      { path: '/assigned', method: 'get', handler: this.getAllByMe, middleware: [AuthGuard] },
       { path: '/:id', method: 'get', handler: this.getById },
       { path: '/:id', method: 'put', handler: this.update, middleware: [AuthGuard] },
       { path: '/:id', method: 'delete', handler: this.delete, middleware: [AuthGuard] },
@@ -97,6 +98,19 @@ export class TaskController extends BaseController {
     }
 
     const result = await this.taskService.getMyAuthored(userId, dto);
+
+    res.json(result);
+  }
+
+  async getAllByMe(req: Request, res: Response) {
+    const dto = validation(FindAllTaskQueryDto, req.query);
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      throw new UnauthorizedException();
+    }
+
+    const result = await this.taskService.getMyAssigned(userId, dto);
 
     res.json(result);
   }
