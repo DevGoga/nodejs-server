@@ -28,4 +28,10 @@ export class AppConfig {
 
   @IsString()
   redisUrl: string;
+
+  @IsString()
+  authToken: string;
+
+  @IsString()
+  refreshToken: string;
 }

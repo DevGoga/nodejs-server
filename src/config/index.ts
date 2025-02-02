@@ -18,6 +18,8 @@ const config: EnvStructure<AppConfig> = {
   postgresPort: process.env.POSTGRES_PORT,
   postgresdDb: process.env.POSTGRES_DB,
   redisUrl: process.env.REDIS_URL,
+  authToken: process.env.ACCESS_SECRET,
+  refreshToken: process.env.REFRESH_SECRET,
 };
 
 export const appConfig = validation(AppConfig, config);
