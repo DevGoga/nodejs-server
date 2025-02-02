@@ -25,7 +25,7 @@ export class TaskController extends BaseController {
       { path: '', method: 'post', handler: this.create, middleware: [AuthGuard] },
       { path: '', method: 'get', handler: this.getAll },
       { path: '/authored', method: 'get', handler: this.getAllByTasks, middleware: [AuthGuard] },
-      { path: '/assigned', method: 'get', handler: this.getAllByMe, middleware: [AuthGuard] },
+      { path: '/assigned', method: 'get', handler: this.getMyAssigned, middleware: [AuthGuard] },
       { path: '/:id', method: 'get', handler: this.getById },
       { path: '/:id', method: 'put', handler: this.update, middleware: [AuthGuard] },
       { path: '/:id', method: 'delete', handler: this.delete, middleware: [AuthGuard] },
@@ -77,13 +77,14 @@ export class TaskController extends BaseController {
 
   async getById(req: Request, res: Response) {
     const { id } = validation(IdNumberDto, req.params);
-    const result = await this.taskService.getIdNick(id);
+    const result = await this.taskService.get(id);
 
     res.json(result);
   }
 
   async getAll(req: Request, res: Response) {
     const dto = validation(FindAllTaskQueryDto, req.query);
+
     const result = await this.taskService.all(dto);
 
     res.json({ ...result, ...dto });
@@ -102,7 +103,7 @@ export class TaskController extends BaseController {
     res.json(result);
   }
 
-  async getAllByMe(req: Request, res: Response) {
+  async getMyAssigned(req: Request, res: Response) {
     const dto = validation(FindAllTaskQueryDto, req.query);
     const userId = req.session.user?.id;
 
