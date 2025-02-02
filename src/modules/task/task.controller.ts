@@ -84,6 +84,7 @@ export class TaskController extends BaseController {
 
   async getAll(req: Request, res: Response) {
     const dto = validation(FindAllTaskQueryDto, req.query);
+
     const result = await this.taskService.all(dto);
 
     res.json({ ...result, ...dto });

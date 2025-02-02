@@ -1,5 +1,6 @@
 import { injectable } from 'inversify';
 import { Op } from 'sequelize';
+import { SortDirection } from '../../common/sort-direction.enum';
 import { TaskModel, UserModel } from '../../database/models';
 import { ForbiddenException, NotFoundException } from '../../exceptions';
 import { CreateTaskDto, UpdateTaskDto } from './dto';
@@ -61,14 +62,29 @@ export class TaskService {
   }
 
   async all(dto: FindAllTaskQueryDto) {
-    const { limit, offset } = dto;
-    const { rows, count } = await TaskModel.findAndCountAll({
-      limit,
-      offset,
-      order: [TaskSortBy.id],
+    const { limit, offset, sortBy = TaskSortBy.id, sortDirection = SortDirection.asc, search } = dto;
+
+    const task = await TaskModel.findAll({
+      include: [
+        { model: UserModel, attributes: ['id', 'nick'], as: 'author' },
+        { model: UserModel, attributes: ['id', 'nick'], as: 'assignee' },
+      ],
     });
 
-    return { total: count, limit, offset, data: rows };
+    const where = {
+      ...(search
+        ? { [Op.or]: [{ title: { [Op.iLike]: `%${search}%` } }, { description: { [Op.iLike]: `%${search}%` } }] }
+        : {}),
+    };
+
+    const { count } = await TaskModel.findAndCountAll({
+      where,
+      limit,
+      offset,
+      order: [[sortBy, sortDirection]],
+    });
+
+    return { total: count, limit, offset, data: task };
   }
 
   async getMyAuthored(id: UserModel['id'], dto: FindAllTaskQueryDto) {
