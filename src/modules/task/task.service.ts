@@ -18,21 +18,17 @@ export class TaskService {
   }
 
   async get(id: TaskModel['id']) {
-    const task = await TaskModel.findByPk(id);
-
-    if (!task) {
-      throw new NotFoundException(`Task with id [${id}] is not exist`);
-    }
-
-    return task;
-  }
-
-  async getIdNick(id: TaskModel['id']) {
     const task = await TaskModel.findByPk(id, {
       include: [
         {
           model: UserModel,
           attributes: ['id', 'nick'],
+          as: 'author',
+        },
+        {
+          model: UserModel,
+          attributes: ['id', 'nick'],
+          as: 'assignee',
         },
       ],
     });
