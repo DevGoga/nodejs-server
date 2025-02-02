@@ -4,8 +4,9 @@ import { IdNumberDto } from '../../common';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
 import { UnauthorizedException } from '../../exceptions';
-import { AuthGuard } from '../../guards';
+import { JwtGuard } from '../../guards';
 import { validation } from '../../utilites';
+import { JwtService } from '../users/jwt.service';
 import { CreateTaskDto, UpdateTaskDto } from './dto';
 import { FindAllTaskQueryDto } from './dto/find-all-task-query.dto';
 import { TaskService } from './task.service';
@@ -15,20 +16,26 @@ export class TaskController extends BaseController {
   constructor(
     @inject(TaskService)
     private readonly taskService: TaskService,
+    @inject(JwtService)
+    private readonly jwtService: JwtService,
   ) {
     super();
     this.initRoutes();
   }
 
   initRoutes() {
+    const jwtGuard = JwtGuard(this.jwtService);
+
+    const middleware = [jwtGuard];
+
     const routes: Route[] = [
-      { path: '', method: 'post', handler: this.create, middleware: [AuthGuard] },
+      { path: '', method: 'post', handler: this.create, middleware },
       { path: '', method: 'get', handler: this.getAll },
-      { path: '/authored', method: 'get', handler: this.getAllByTasks, middleware: [AuthGuard] },
-      { path: '/assigned', method: 'get', handler: this.getMyAssigned, middleware: [AuthGuard] },
+      { path: '/authored', method: 'get', handler: this.getAllByTasks, middleware },
+      { path: '/assigned', method: 'get', handler: this.getMyAssigned, middleware },
       { path: '/:id', method: 'get', handler: this.getById },
-      { path: '/:id', method: 'put', handler: this.update, middleware: [AuthGuard] },
-      { path: '/:id', method: 'delete', handler: this.delete, middleware: [AuthGuard] },
+      { path: '/:id', method: 'put', handler: this.update, middleware },
+      { path: '/:id', method: 'delete', handler: this.delete, middleware },
     ];
 
     this.addRoute(routes);
@@ -36,7 +43,7 @@ export class TaskController extends BaseController {
 
   async create(req: Request, res: Response) {
     const dto = validation(CreateTaskDto, req.body);
-    const authorId = req.session.user?.id;
+    const authorId = res.locals.user.id;
 
     if (!authorId) {
       throw new UnauthorizedException();
@@ -49,7 +56,7 @@ export class TaskController extends BaseController {
 
   async delete(req: Request, res: Response) {
     const { id } = validation(IdNumberDto, req.params);
-    const userId = req.session.user?.id;
+    const userId = res.locals.user.id;
 
     if (!userId) {
       throw new UnauthorizedException();
@@ -64,7 +71,7 @@ export class TaskController extends BaseController {
     const dto = validation(UpdateTaskDto, req.body);
     const { id } = validation(IdNumberDto, req.params);
 
-    const userId = req.session.user?.id;
+    const userId = res.locals.user.id;
 
     if (!userId) {
       throw new UnauthorizedException();
@@ -92,7 +99,7 @@ export class TaskController extends BaseController {
 
   async getAllByTasks(req: Request, res: Response) {
     const dto = validation(FindAllTaskQueryDto, req.query);
-    const userId = req.session.user?.id;
+    const userId = res.locals.user.id;
 
     if (!userId) {
       throw new UnauthorizedException();
@@ -105,7 +112,7 @@ export class TaskController extends BaseController {
 
   async getMyAssigned(req: Request, res: Response) {
     const dto = validation(FindAllTaskQueryDto, req.query);
-    const userId = req.session.user?.id;
+    const userId = res.locals.user.id;
 
     if (!userId) {
       throw new UnauthorizedException();

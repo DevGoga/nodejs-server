@@ -3,9 +3,10 @@ import { inject, injectable } from 'inversify';
 import { BaseController } from '../../common/base.controller';
 import { Route } from '../../common/types';
 import { UnauthorizedException } from '../../exceptions';
-import { AuthGuard } from '../../guards';
+import { JwtGuard } from '../../guards';
 import { validation } from '../../utilites';
 import { RegistrationUserDto, UpdateUserDto } from './dto';
+import { JwtService } from './jwt.service';
 import { UserService } from './user.service';
 
 @injectable()
@@ -13,17 +14,23 @@ export class UserController extends BaseController {
   constructor(
     @inject(UserService)
     private readonly userService: UserService,
+    @inject(JwtService)
+    private readonly jwtService: JwtService,
   ) {
     super();
     this.initRoutes();
   }
 
   initRoutes() {
+    const jwtGuard = JwtGuard(this.jwtService);
+
+    const middleware = [jwtGuard];
+
     const routes: Route[] = [
       { path: '/register', method: 'post', handler: this.registration },
       { path: '/login', method: 'post', handler: this.login },
-      { path: '/profile', method: 'get', handler: this.profile, middleware: [AuthGuard] },
-      { path: '/update', method: 'put', handler: this.update, middleware: [AuthGuard] },
+      { path: '/profile', method: 'get', handler: this.profile, middleware },
+      { path: '/update', method: 'put', handler: this.update, middleware },
     ];
 
     this.addRoute(routes);
@@ -38,7 +45,7 @@ export class UserController extends BaseController {
   }
 
   async profile(req: Request, res: Response) {
-    const id = req.session.user?.id;
+    const id = res.locals.user.id;
 
     if (!id) {
       throw new UnauthorizedException();
@@ -54,14 +61,12 @@ export class UserController extends BaseController {
 
     const result = await this.userService.login(dto);
 
-    req.session.user = result;
-
     res.json(result);
   }
 
   async update(req: Request, res: Response) {
     const dto = validation(UpdateUserDto, req.body);
-    const id = req.session.user?.id;
+    const id = res.locals.user.id;
 
     if (!id) {
       throw new UnauthorizedException();

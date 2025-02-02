@@ -55,7 +55,7 @@ export class UserService {
 
     await this.redisService.set(`refresh:user-${user.id}`, { refreshToken: pair.refreshToken });
 
-    return user;
+    return pair;
   }
 
   async update(id: UserModel['id'], dto: UpdateUserDto) {
