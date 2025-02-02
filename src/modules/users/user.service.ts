@@ -1,12 +1,19 @@
 import { compareSync, hashSync } from 'bcrypt';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { appConfig } from '../../config';
 import { UserModel } from '../../database/models';
+import { RedisService } from '../../database/redis/redis.service';
 import { BadRequestException, NotFoundException, UnauthorizedException } from '../../exceptions';
 import { RegistrationUserDto, UpdateUserDto } from './dto';
+import { JwtService } from './jwt.service';
 
 @injectable()
 export class UserService {
+  constructor(
+    @inject(JwtService) private readonly jwtService: JwtService,
+    @inject(RedisService) private readonly redisService: RedisService,
+  ) {}
+
   async registration(dto: RegistrationUserDto) {
     const user = await UserModel.findOne({ where: { nick: dto.nick } });
 
@@ -43,6 +50,10 @@ export class UserService {
     if (!isHashValid) {
       throw new UnauthorizedException(`A user with this password is missing`);
     }
+
+    const pair = this.jwtService.makeTokenPair(user.id);
+
+    await this.redisService.set(`refresh:user-${user.id}`, { refreshToken: pair.refreshToken });
 
     return user;
   }
